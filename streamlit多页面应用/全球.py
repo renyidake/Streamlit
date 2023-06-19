@@ -8,11 +8,11 @@ st.sidebar.markdown("# 装配式建筑重点技术专利概况分析")
 def main():
     # 图片文件名列表
     image_files = [
-        "images/1.png",
-        "images/2.png",
-        "images/3.png",
-        "images/4.png",
-        "images/5.png",
+        "../images/1.png",
+        "../images/2.png",
+        "../images/3.png",
+        "../images/4.png",
+        "../images/5.png",
     ]
     captions=['基于全球装配式建筑重点技术近二十年在全球的相关专利申请统计，装配式 建筑技术近二十年来的专利申请量基本呈逐步上升态势，并从 2012 年开始步入 快速上升周期，但目前有效的专利总体仅占 36%左右，审中的专利占 26%左右，反映出该领域技术创新热度高但专利维持性相对不高。',
               '中国在该技术领域的专利申请量相比其他国家数量较多，可能在于近十年中 国建筑行业发展速度较快从而带动建筑行业相关技术快速创新。',
@@ -28,8 +28,10 @@ def main():
     while True:
         # for image_file in image_files:
         for i in range(0,len(captions)):
+            image_data = open(image_files[i], "rb").read()
+
             # 显示当前图片
-            carousel.image(image_files[i], caption=captions[i])
+            carousel.image(image_data, caption=captions[i])
 
             # 等待一段时间
             time.sleep(3)
