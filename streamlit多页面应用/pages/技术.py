@@ -8,10 +8,10 @@ st.sidebar.markdown("# 装配式建筑重点技术专利概况分析")
 def main():
     # 图片文件名列表
     image_files = [
-        "images/16.png",
-        "images/17.png",
-        "images/18.png",
-        "images/19.png",
+        "streamlit多页面应用/images/16.png",
+        "streamlit多页面应用/images/17.png",
+        "streamlit多页面应用/images/18.png",
+        "streamlit多页面应用/images/19.png",
     ]
     captions=['从具体来看预制构件混凝土脱模技术的主要技术改进在于脱模方法/工艺，以及模具/脱模设备的改进，其技术创新热度较高，专利申请趋势较好。其次，脱模剂相比之下虽专利创新热度比较低，但其专利申请趋势整体依然是递增的，技术创新趋势较好。',
               '预制构件混凝土脱模技术的主要技术特征包括模具/脱模设备、脱模方法/工 艺、脱模剂，其主要的技术改进方向是为了使结构更简单、提高生产效率以及环 境友好等。',

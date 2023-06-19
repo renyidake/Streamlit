@@ -8,12 +8,12 @@ st.sidebar.markdown("# 装配式建筑重点技术专利概况分析")
 def main():
     # 图片文件名列表
     image_files = [
-        "images/6.png",
-        "images/7.png",
-        "images/8.png",
-        "images/9.png",
-        "images/10.png",
-        "images/11.png",
+        "streamlit多页面应用/images/6.png",
+        "streamlit多页面应用/images/7.png",
+        "streamlit多页面应用/images/8.png",
+        "streamlit多页面应用/images/9.png",
+        "streamlit多页面应用/images/10.png",
+        "streamlit多页面应用/images/11.png",
     ]
     captions=['国内装配式建筑技术的专利申请量近二十年基本呈快速上升态势，其中专 利有效率及审中专利占比较大，特别是在近十年由于建筑行业市场发展及政策驱 动，该技术的专利申请量急速上涨，专利技术创新热度高。',
               '从国内专利申请的区域分布来看，江苏、广东、浙江为主要的专利申请地区，其相关的专利创新热度较高，湖北地区在该技术领域的专利申请量与之相较存在 一定的差距。',

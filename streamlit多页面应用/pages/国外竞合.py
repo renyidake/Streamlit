@@ -8,12 +8,12 @@ st.sidebar.markdown("# 装配式建筑重点技术专利概况分析")
 def main():
     # 图片文件名列表
     image_files = [
-        "images/20.png",
-        "images/21.png",
-        "images/22.png",
-        "images/23.png",
-        "images/24.png",
-        "images/25.png",
+        "streamlit多页面应用/images/20.png",
+        "streamlit多页面应用/images/21.png",
+        "streamlit多页面应用/images/22.png",
+        "streamlit多页面应用/images/23.png",
+        "streamlit多页面应用/images/24.png",
+        "streamlit多页面应用/images/25.png",
     ]
     captions=['基于对国外装配式建筑技术相关专利信息统计，其中专利权人艾乐迈铁科公 司、鹿岛建设株式会社、及韩国建设技术研究院相关专利申请量排名靠前，在本 技术领域具有较好的专利技术基础，通过对此类相关权人的专利布局情况进行分 析，掌握其技术布局方向，同时能指引沛函建工在装配式建筑技术上的技术发展 及完善竞争能力布局体系。',
               '从 Elematic 公司相关专利的申请趋势及专利法律状态来看，该公司的相关技术成果产出具有 一定的阶段性，且目前约 64%的专利已经失效，有效专利量约占 26%，审中专 利不足 3%。从专利角度反映出目前该公司在预制构件混凝土脱模技术方向的技 术创新活跃度较低，专利维持度较低。',
