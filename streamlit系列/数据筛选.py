@@ -2,6 +2,8 @@ from collections import defaultdict
 import streamlit as st
 import pandas as pd
 import pandas.api.types  as pd_types
+import tempfile
+
 
 def build_upload_file():
     uploaded_file = st.file_uploader('excel文件',type=['xlsx'])
@@ -75,16 +77,18 @@ def build_sidebar(df_infos):
         st.dataframe(df_infos['__filters__'])
 
         def onExport():
-            file_path = 'exports.xlsx'
-            with st.spinner('Wait for it...'):
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                file_path = temp_file.name
 
-                with pd.ExcelWriter(file_path) as ew:
-                    for name,df in df_infos.items():
-                        df.to_excel(ew,name,index=False)
+                with pd.ExcelWriter(file_path, engine='openpyxl') as ew:
+                    for name, df in df_infos.items():
+                        df.to_excel(ew, name, index=False)
 
-            st.success(f'成功导出!查看[{file_path}]')
+            return file_path
 
-        st.button('导出',on_click=onExport)
+        if st.button('导出', on_click=onExport):
+            file_path = onExport()
+            st.download_button('点击此处下载导出的文件', data=open(file_path, 'rb').read(), file_name='exported_data.xlsx')
 
 file = build_upload_file()
 dfs  = load_data(file)
