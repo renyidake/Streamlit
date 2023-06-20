@@ -4,9 +4,6 @@ from pathlib import Path
 import time
 
 
-
-
-
 folder = st.text_input('文件夹')
 
 if not folder:
@@ -17,7 +14,6 @@ folder=Path(folder)
 if not folder.exists():
     st.warning(f'文件夹不存在呀[{folder}]')
     st.stop()
-
 
 
 file_infos = pd.DataFrame([{
