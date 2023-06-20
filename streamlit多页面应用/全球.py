@@ -29,10 +29,10 @@ def main():
         # for image_file in image_files:
         for i in range(0,len(captions)):
             # 显示当前图片
-            carousel.image(image_files[i], caption=captions[i])
+            carousel.image(image_files[i], caption=f"<p style='text-align: left;'>{captions[i]}</p>", unsafe_allow_html=True)
 
             # 等待一段时间
-            time.sleep(3)
+            time.sleep(5)
 
             # 清除当前图片
             carousel.empty()
