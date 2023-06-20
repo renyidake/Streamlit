@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pygwalker as pyg
-
+#数据透视
 st.set_page_config(layout='wide')
 
 # excel文件选择框
