@@ -5,7 +5,7 @@ st.set_page_config(layout="wide")
 
 @st.cache_data
 def load_df():
-    return pd.read_excel('emoji中文对照表.xlsx')
+    return pd.read_excel('streamlit系列/emoji中文对照表.xlsx')
 
 df = load_df()
 
