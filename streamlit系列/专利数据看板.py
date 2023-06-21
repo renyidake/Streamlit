@@ -9,7 +9,7 @@ st.set_page_config(layout='wide')
 #
 # @st.cache_data
 def load_df():
-    return pd.read_excel('2020-2022中之信.xlsx') #streamlit系列/2020-2022中之信.xlsx
+    return pd.read_excel('streamlit系列/2020-2022中之信.xlsx') #streamlit系列/2020-2022中之信.xlsx
 
 df=load_df()
 
