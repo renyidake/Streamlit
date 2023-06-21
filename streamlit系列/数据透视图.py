@@ -9,11 +9,11 @@ st.set_page_config(layout='wide')
 def load_df(file):
     return pd.read_excel(file)
 
-uploaded_file = st.file_uploader("excel文件",type=['xlsx'])
+uploaded_file = st.file_uploader("上传Excel文件",type=['xlsx'])
 
 if uploaded_file is None:
     st.stop()
 
-df = load_df(uploaded_file)
+df = load_df(uploaded_file.getvalue())
 pyg.walk(df,env='Streamlit')
 
