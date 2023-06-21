@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
-
+from PIL import Image
 #streamlit 页面布局为 宽
 st.set_page_config(layout='wide')
 
@@ -9,12 +9,12 @@ st.set_page_config(layout='wide')
 #
 # @st.cache_data
 def load_df():
-    return pd.read_excel('streamlit系列/2020-2022中之信.xlsx')
+    return pd.read_excel('streamlit系列/2020-2022中之信.xlsx') #streamlit系列/2020-2022中之信.xlsx
 
 df=load_df()
 
 #侧边栏 标题
-st.sidebar.header('筛选条件：')
+st.sidebar.header('🎈筛选条件🎈：')
 #返回列的唯一值数组
 market_values = df['受理局'].unique()
 #多选择的部件
@@ -35,20 +35,28 @@ market_values = df['申请年'].unique()
 #多选择的部件
 markets3= st.sidebar.multiselect('申请年',market_values,market_values)
 
+
 #返回列的唯一值数组
 market_values = df['当前申请专利权人州省'].unique()
+#增加全选选项控制
+market_values_with_all = ['全选'] + market_values.tolist()
 #多选择的部件
-markets4 = st.sidebar.multiselect('当前申请专利权人州省',market_values,market_values)
+markets4 = st.sidebar.multiselect('当前申请专利权人州省', market_values_with_all,market_values_with_all[0])
+if '全选' in markets4:
+    # Select all market values
+    markets4 = market_values.tolist()
+
 
 #做数据筛选 根据上面选择的类别
 df1 = df.query('受理局 in @markets and 专利类型 in @markets1  and'
               ' 简单法律状态 in @markets2 and 申请年 in @markets3 and 当前申请专利权人州省 in @markets4')
 
+st.image("新不二LOGO.png")
 st.dataframe(df1)
 
 
 # 页面 标题
-st.title('专利数据看板')
+st.title('🎉专利数据看板🎉')
 
 # 指标 计算
 zongshenqing = int(df1['公开公告号'].count())
@@ -72,24 +80,24 @@ left1,mid1,right1= st.columns(3)
 left2,mid2,right2 = st.columns(3)
 #显示计算度量
 with left1:
-    st.subheader('总申请量:')
+    st.subheader('📚总申请量:')
     st.subheader(f'{zongshenqing:,}')
 
 with mid1:
-    st.subheader('授权专利:')
+    st.subheader('📖授权专利:')
     st.subheader(f'{shouquan: }')
 
 with right1:
-    st.subheader('驳回专利:')
+    st.subheader('♻驳回专利:')
     st.subheader(f'{bohui:,}')
 with left2:
-    st.subheader('发明专利:')
+    st.subheader('📗发明专利:')
     st.subheader(f'{faming:,}')
 with mid2:
-    st.subheader('实用新型:')
+    st.subheader('📘实用新型:')
     st.subheader(f'{shiyong: }')
 with right2:
-    st.subheader('外观设计:')
+    st.subheader('📙外观设计:')
     st.subheader(f'{waiguan:,}')
 
 df_1 = df1.groupby('代理人', as_index=False)['公开公告号'].count()
