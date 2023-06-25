@@ -217,7 +217,7 @@ wuju=['中国','美国','日本','韩国','欧洲专利局']
 fusheng='浙江'
 dishi='台州'
 
-streamlit run script.py --browser.gatherUsageStats=False
+
 
 
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
