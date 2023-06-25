@@ -245,7 +245,7 @@ st.set_page_config(initial_sidebar_state='collapsed',layout='centered')
 # 缓存Excel数据到load-df
 # @st.cache_data
 def load_df():
-    return pd.read_excel('AR眼镜.xlsx')  # streamlit系列/2020-2022中之信.xlsx
+    return pd.read_excel('streamlit系列/AR眼镜.xlsx')  # streamlit系列/2020-2022中之信.xlsx
 
 
 df = load_df()
@@ -306,7 +306,7 @@ if '全选' in markets4:
 dfm = df.query('受理局 in @markets and 专利类型 in @markets1  and'
                ' 简单法律状态 in @markets2 and 申请年 in @markets3 and 当前申请专利权人州省 in @markets4')
 
-st.image("新不二LOGO.png")  # streamlit系列/新不二LOGO.png
+st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
 st.dataframe(dfm)
 
 # 页面 标题
