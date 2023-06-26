@@ -15,6 +15,8 @@ from pandas.api.types import CategoricalDtype
 mpl.rcParams['font.sans-serif'] = ["SimHei"]
 # 正常显示中文字符
 mpl.rcParams["axes.unicode_minus"] = False
+# 加载自定义字体文件
+mpl.font_manager.fontManager.addfont('path_to_font_file/SimHei.ttf')
 def genOrder(df,orderList,colName): #自定义排序
     cat_order = CategoricalDtype(orderList,ordered=True)
     df[colName] = df[colName].astype(cat_order)
