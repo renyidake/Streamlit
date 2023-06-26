@@ -16,7 +16,7 @@ mpl.rcParams['font.sans-serif'] = ["SimHei"]
 # 正常显示中文字符
 mpl.rcParams["axes.unicode_minus"] = False
 # 加载自定义字体文件
-mpl.font_manager.fontManager.addfont('./SimHei.ttf')
+mpl.font_manager.fontManager.addfont('streamlit系列/SimHei.ttf')
 def genOrder(df,orderList,colName): #自定义排序
     cat_order = CategoricalDtype(orderList,ordered=True)
     df[colName] = df[colName].astype(cat_order)
