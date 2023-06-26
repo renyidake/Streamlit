@@ -5,7 +5,7 @@ import altair as alt
 from PIL import Image
 import matplotlib.pyplot as plt
 import random
-from pylab import mpl
+import matplotlib as mpl
 from pyecharts import options as opts
 from pyecharts.charts import Line, Grid,Bar,PictorialBar,Pie,Funnel,Scatter,Map,Geo,EffectScatter,Gauge,Polar,Radar,HeatMap,Graph,WordCloud
 from matplotlib.ticker import MaxNLocator
