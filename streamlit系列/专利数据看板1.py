@@ -12,11 +12,13 @@ from matplotlib.ticker import MaxNLocator
 
 from pandas.api.types import CategoricalDtype
 
+# 加载自定义字体文件
+mpl.font_manager.fontManager.addfont('streamlit系列/simhei.ttf')
+
 mpl.rcParams['font.sans-serif'] = ["SimHei"]
 # 正常显示中文字符
 mpl.rcParams["axes.unicode_minus"] = False
-# 加载自定义字体文件
-mpl.font_manager.fontManager.addfont('streamlit系列/simhei.ttf')
+print(mpl.rcParams)
 def genOrder(df,orderList,colName): #自定义排序
     cat_order = CategoricalDtype(orderList,ordered=True)
     df[colName] = df[colName].astype(cat_order)
