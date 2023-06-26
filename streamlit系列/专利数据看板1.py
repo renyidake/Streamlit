@@ -223,29 +223,13 @@ dishi='台州'
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
 st.set_page_config(initial_sidebar_state='collapsed',layout='centered')
 # # 添加背景
-# st.markdown(
-#     """
-#     <style>
-#     body {
-#         background-image: url('新不二LOGO.png');
-#         background-repeat: no-repeat;
-#         background-size: cover;
-#         background-position: center center;
-#     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True
-# )
 
 #添加水印效果
-
-
-
 
 # 缓存Excel数据到load-df
 # @st.cache_data
 def load_df():
-    return pd.read_excel('streamlit系列/AR眼镜.xlsx')  # streamlit系列/2020-2022中之信.xlsx
+    return pd.read_excel('streamlit系列/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
 
 
 df = load_df()
