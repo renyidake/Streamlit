@@ -9,7 +9,7 @@ import matplotlib as mpl
 from pyecharts import options as opts
 from pyecharts.charts import Line, Grid,Bar,PictorialBar,Pie,Funnel,Scatter,Map,Geo,EffectScatter,Gauge,Polar,Radar,HeatMap,Graph,WordCloud
 from matplotlib.ticker import MaxNLocator
-
+import base64
 from pandas.api.types import CategoricalDtype
 
 # 加载自定义字体文件
@@ -228,6 +228,29 @@ dishi='台州'
 st.set_page_config(initial_sidebar_state='collapsed',layout='centered')
 # # 添加背景
 
+
+
+def add_local_backgound_image_(image):
+    with open(image, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+
+    css = f"""
+    <style>
+    .stApp {{
+        background-image: url('data:image/png;base64,{encoded_string}');
+        background-size: 80% 50%;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }}
+    </style>
+    """
+
+    st.markdown(css, unsafe_allow_html=True)
+
+add_local_backgound_image_('streamlit系列/新不二LOGO.png') # streamlit系列/新不二LOGO.png
+
+
+
 #添加水印效果
 
 # 缓存Excel数据到load-df
@@ -249,13 +272,13 @@ df=df.rename(columns={'当前发明(专利权)人': '当前发明专利权人'})
 
 
 # 侧边栏 标题
-st.sidebar.header('🎈筛选条件🎈：')
+st.sidebar.header('➡⌛⌛⌛筛选条件⌛⌛⌛⬅')
 # 返回列的唯一值数组
 market_values = df['受理局'].unique()
 # 增加全选选项控制
 market_values_with_all = ['全选'] + market_values.tolist()
 # 多选择的部件
-markets = st.sidebar.multiselect('受理局', market_values_with_all, market_values_with_all[0])
+markets = st.sidebar.multiselect('🌏受理局：', market_values_with_all, market_values_with_all[0])
 if '全选' in markets:
     # Select all market values
     markets= market_values.tolist()
@@ -264,19 +287,19 @@ if '全选' in markets:
 
 market_values = df['专利类型'].unique()
 # 多选择的部件
-markets1 = st.sidebar.multiselect('专利类型', market_values, market_values)
+markets1 = st.sidebar.multiselect('📖专利类型：', market_values, market_values)
 
 # 返回列的唯一值数组
 market_values = df['简单法律状态'].unique()
 # 多选择的部件
-markets2 = st.sidebar.multiselect('简单法律状态', market_values, market_values)
+markets2 = st.sidebar.multiselect('☸简单法律状态：', market_values, market_values)
 
 # 返回列的唯一值数组
 market_values = df['申请年'].unique()
 # 增加全选选项控制
 market_values_with_all = ['全选'] + market_values.tolist()
 # 多选择的部件
-markets3 = st.sidebar.multiselect('申请年', market_values_with_all, market_values_with_all[0])
+markets3 = st.sidebar.multiselect('📅申请年：', market_values_with_all, market_values_with_all[0])
 if '全选' in markets3:
     # Select all market values
     markets3 = market_values.tolist()
@@ -285,20 +308,30 @@ market_values = df['当前申请专利权人州省'].unique()
 # 增加全选选项控制
 market_values_with_all = ['全选'] + market_values.tolist()
 # 多选择的部件
-markets4 = st.sidebar.multiselect('当前申请专利权人州省', market_values_with_all, market_values_with_all[0])
+markets4 = st.sidebar.multiselect('🗺当前申请专利权人州省：', market_values_with_all, market_values_with_all[0])
 if '全选' in markets4:
     # Select all market values
     markets4 = market_values.tolist()
 
+market_values = df['战略新兴产业分类'].unique()
+# 增加全选选项控制
+market_values_with_all = ['全选'] + market_values.tolist()
+# 多选择的部件
+markets5 = st.sidebar.multiselect('🏭战略新兴产业分类：：', market_values_with_all, market_values_with_all[0])
+if '全选' in markets5:
+    markets5 = market_values.tolist()
+
 # 做数据筛选 根据上面选择的类别
 dfm = df.query('受理局 in @markets and 专利类型 in @markets1  and'
-               ' 简单法律状态 in @markets2 and 申请年 in @markets3 and 当前申请专利权人州省 in @markets4')
+               ' 简单法律状态 in @markets2 and 申请年 in @markets3 and 当前申请专利权人州省 in @markets4 and 战略新兴产业分类 in @markets5')
 
-st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
-st.dataframe(dfm)
+
 
 # 页面 标题
-st.title('🎉专利数据看板🎉')
+st.title('🎉🎉🎉专利数据看板🎉🎉🎉')
+
+# st.image("新不二LOGO.png")  # streamlit系列/新不二LOGO.png
+st.dataframe(dfm)
 
 # 指标 计算
 zongshenqing = int(dfm['公开公告号'].count())
@@ -1024,3 +1057,7 @@ huitu7()
 huitu8()
 huitu9()
 huitu10()
+#气球
+st.balloons()
+# #雪花
+# st.snow()
