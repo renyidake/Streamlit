@@ -257,7 +257,7 @@ add_local_backgound_image_('streamlit系列/新不二LOGO.png')
 #
 #
 # df = load_df()
-
+st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
 uploaded_files = st.file_uploader('上传多个Excel文件', accept_multiple_files=True, type='xlsx')
 
 if not uploaded_files:
@@ -352,7 +352,7 @@ dfm = df.query('受理局 in @markets and 专利类型 in @markets1  and'
 # 页面 标题
 st.title('🎉🎉🎉专利数据看板🎉🎉🎉')
 
-st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
+# st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
 st.dataframe(dfm)
 
 
