@@ -227,9 +227,6 @@ dishi='台州'
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
 st.set_page_config(initial_sidebar_state='collapsed',layout='centered')
 # # 添加背景
-
-
-
 def add_local_backgound_image_(image):
     with open(image, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
@@ -247,7 +244,7 @@ def add_local_backgound_image_(image):
 
     st.markdown(css, unsafe_allow_html=True)
 
-add_local_backgound_image_('streamlit系列/新不二LOGO.png') # streamlit系列/新不二LOGO.png
+add_local_backgound_image_('streamlit系列/新不二LOGO.png')
 
 
 
@@ -255,11 +252,23 @@ add_local_backgound_image_('streamlit系列/新不二LOGO.png') # streamlit系�
 
 # 缓存Excel数据到load-df
 # @st.cache_data
-def load_df():
-    return pd.read_excel('streamlit系列/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+# def load_df():
+#     return pd.read_excel('streamlit系列/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+#
+#
+# df = load_df()
 
+uploaded_files = st.file_uploader('上传多个Excel文件', accept_multiple_files=True, type='xlsx')
 
-df = load_df()
+if not uploaded_files:
+    def load_df():
+        return pd.read_excel('streamlit系列/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+    df = load_df()
+else:
+    for file in uploaded_files:
+        print(file)
+        df = pd.read_excel(file)
+
 df=df.rename(columns={'公开(公告)号': '公开公告号'})
 df=df.rename(columns={'[标]当前申请(专利权)人': '当前申请专利权人'})
 df=df.rename(columns={'当前申请(专利权)人数量': '当前申请专利权人数量'})
@@ -283,16 +292,30 @@ if '全选' in markets:
     # Select all market values
     markets= market_values.tolist()
 # # 多选择的部件
-# markets = st.sidebar.multiselect('受理局', market_values, market_values)
 
 market_values = df['专利类型'].unique()
+# 增加全选选项控制
+market_values_with_all = ['全选'] + market_values.tolist()
 # 多选择的部件
-markets1 = st.sidebar.multiselect('📖专利类型：', market_values, market_values)
+markets1 = st.sidebar.multiselect('📖专利类型：', market_values_with_all, market_values_with_all[0])
+if '全选' in markets1:
+    # Select all market values
+    markets1 = market_values.tolist()
+
+# # 返回列的唯一值数组
+# market_values = df['简单法律状态'].unique()
+# # 多选择的部件
+# markets2 = st.sidebar.multiselect('☸简单法律状态：', market_values, market_values)
 
 # 返回列的唯一值数组
 market_values = df['简单法律状态'].unique()
+# 增加全选选项控制
+market_values_with_all = ['全选'] + market_values.tolist()
 # 多选择的部件
-markets2 = st.sidebar.multiselect('☸简单法律状态：', market_values, market_values)
+markets2 = st.sidebar.multiselect('☸简单法律状态：', market_values_with_all, market_values_with_all[0])
+if '全选' in markets2:
+    # Select all market values
+    markets2 = market_values.tolist()
 
 # 返回列的唯一值数组
 market_values = df['申请年'].unique()
@@ -326,12 +349,12 @@ dfm = df.query('受理局 in @markets and 专利类型 in @markets1  and'
                ' 简单法律状态 in @markets2 and 申请年 in @markets3 and 当前申请专利权人州省 in @markets4 and 战略新兴产业分类 in @markets5')
 
 
-
 # 页面 标题
 st.title('🎉🎉🎉专利数据看板🎉🎉🎉')
 
-# st.image("新不二LOGO.png")  # streamlit系列/新不二LOGO.png
+st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
 st.dataframe(dfm)
+
 
 # 指标 计算
 zongshenqing = int(dfm['公开公告号'].count())
@@ -463,63 +486,65 @@ def huitu1():
 def huitu2():
     dfmb=dfm
     df1 = dfmb.query('受理局 in %s ' % wuju)
+    if df1.empty:
+        st.write('该数据范围无相应图表！')
+    else:
+        df1 = df1[['公开公告号', '受理局', '优先权国家']]
+        series = df1['优先权国家'].str.split('|', expand=True)  # 按照 分隔符拆分字段
+        df_z = df1[['公开公告号', '受理局']]
+        df_11 = pd.DataFrame()
+        for i in range(0, series.columns.size):
+            df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
+            df_l.columns = ['公开公告号', '受理局', '优先权国家']
+            df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
+        df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
+        df_11 = pd.concat([df_11['公开公告号'],df_11['受理局'], df_11['优先权国家'].str.strip()], axis=1)  # 用strip（）删除字符串头尾多余空格
+        print(df_11)
+        for i in range(0,len(df_11['优先权国家'])):
+            if df_11.iat[i,2]=='CN':
+                df_11.iat[i,2] = '中国'
+            if df_11.iat[i,2]=='US':
+                df_11.iat[i,2] = '美国'
+            if df_11.iat[i,2]=='JP':
+                df_11.iat[i,2] = '日本'
+            if df_11.iat[i,2]=='KR':
+                df_11.iat[i,2] = '韩国'
+            if df_11.iat[i,2]=='EP':
+                df_11.iat[i,2] = '欧洲专利局'
+        print(df_11)
+        df_11=df_11.query('优先权国家 in %s ' % wuju)
+        df_11=df_11.drop_duplicates()
+        df_11 = df_11.groupby(['受理局', '优先权国家'], as_index=False)['公开公告号'].count()
+        df_11 = df_11.sort_values(by=['受理局', '优先权国家'], ascending=True)
+        df_11.columns = ['受理局', '优先权国家', '申请数量']
+        df1=df_11
 
-    df1 = df1[['公开公告号', '受理局', '优先权国家']]
-    series = df1['优先权国家'].str.split('|', expand=True)  # 按照 分隔符拆分字段
-    df_z = df1[['公开公告号', '受理局']]
-    df_11 = pd.DataFrame()
-    for i in range(0, series.columns.size):
-        df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
-        df_l.columns = ['公开公告号', '受理局', '优先权国家']
-        df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
-    df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
-    df_11 = pd.concat([df_11['公开公告号'],df_11['受理局'], df_11['优先权国家'].str.strip()], axis=1)  # 用strip（）删除字符串头尾多余空格
-    print(df_11)
-    for i in range(0,len(df_11['优先权国家'])):
-        if df_11.iat[i,2]=='CN':
-            df_11.iat[i,2] = '中国'
-        if df_11.iat[i,2]=='US':
-            df_11.iat[i,2] = '美国'
-        if df_11.iat[i,2]=='JP':
-            df_11.iat[i,2] = '日本'
-        if df_11.iat[i,2]=='KR':
-            df_11.iat[i,2] = '韩国'
-        if df_11.iat[i,2]=='EP':
-            df_11.iat[i,2] = '欧洲专利局'
-    print(df_11)
-    df_11=df_11.query('优先权国家 in %s ' % wuju)
-    df_11=df_11.drop_duplicates()
-    df_11 = df_11.groupby(['受理局', '优先权国家'], as_index=False)['公开公告号'].count()
-    df_11 = df_11.sort_values(by=['受理局', '优先权国家'], ascending=True)
-    df_11.columns = ['受理局', '优先权国家', '申请数量']
-    df1=df_11
+        xmax = max(df1['申请数量'])
+        xmin = min(df1['申请数量'])
+        plt.figure(dpi=720)  # 配置画布大小，分辨率
+        fig, ax = plt.subplots()  # 去除多余边框
+        ax.spines['right'].set_visible(False)  # 右边框
+        ax.spines['top'].set_visible(False)  # 上边框
+        plt.subplots_adjust(left=0.2, right=0.95, top=0.95, bottom=0.15) #图与画布四周距离
 
-    xmax = max(df1['申请数量'])
-    xmin = min(df1['申请数量'])
-    plt.figure(dpi=720)  # 配置画布大小，分辨率
-    fig, ax = plt.subplots()  # 去除多余边框
-    ax.spines['right'].set_visible(False)  # 右边框
-    ax.spines['top'].set_visible(False)  # 上边框
-    plt.subplots_adjust(left=0.2, right=0.95, top=0.95, bottom=0.15) #图与画布四周距离
+        color = ["#3685fe", "#f5616f", "#50c48f", "#26ccd8", "#9977ef",
+                 "#f7b13f", "#f9e264", "#f47a75", "#009db2", "#024b51", ]
+        for i in range(0, len(df1['申请数量'])):
+            if len(df1['申请数量']) > i * 10:
+                color.extend(color)
+            if len(color) > len(df1['申请数量']):
+                break
 
-    color = ["#3685fe", "#f5616f", "#50c48f", "#26ccd8", "#9977ef",
-             "#f7b13f", "#f9e264", "#f47a75", "#009db2", "#024b51", ]
-    for i in range(0, len(df1['申请数量'])):
-        if len(df1['申请数量']) > i * 10:
-            color.extend(color)
-        if len(color) > len(df1['申请数量']):
-            break
-
-    color = random.sample(color, len(df1['申请数量']))
-    plt.grid(ls='-.', lw=0.35)  # 增加栅格
-    plt.scatter(df1['受理局'], df1['优先权国家'], df1['申请数量']/xmax*3000,c=color, alpha=0.7)
-    plt.xlabel('技术目标国/地区',fontdict={ 'size':14})
-    plt.ylabel('技术来源国/地区',fontdict={ 'size':14})
-    plt.xticks(size=12)  # X轴刻度，标签，旋转度
-    plt.yticks(size=12)
-    for a, b, c in zip(df1['受理局'], df1['优先权国家'], df1['申请数量']):
-        plt.text(a, b, c, ha='center', va='center', fontsize=10, alpha=0.9)
-    st.pyplot(fig)
+        color = random.sample(color, len(df1['申请数量']))
+        plt.grid(ls='-.', lw=0.35)  # 增加栅格
+        plt.scatter(df1['受理局'], df1['优先权国家'], df1['申请数量']/xmax*3000,c=color, alpha=0.7)
+        plt.xlabel('技术目标国/地区',fontdict={ 'size':14})
+        plt.ylabel('技术来源国/地区',fontdict={ 'size':14})
+        plt.xticks(size=12)  # X轴刻度，标签，旋转度
+        plt.yticks(size=12)
+        for a, b, c in zip(df1['受理局'], df1['优先权国家'], df1['申请数量']):
+            plt.text(a, b, c, ha='center', va='center', fontsize=10, alpha=0.9)
+        st.pyplot(fig)
 
 ##全球 地区分布分析
 def huitu3():
@@ -528,19 +553,19 @@ def huitu3():
         df1 = dfmb[['受理局', '公开公告号']]
         df1 = df1.groupby('受理局', as_index=False)['公开公告号'].count()
         df1 = df1.sort_values(by='公开公告号', ascending=False)
-        df1=df1.head(10)
+        # df1=df1.head(10)
         listx = list(df1['受理局'])
         listy = list(df1['公开公告号'])
         data_pair = [list(z) for z in zip(listx, listy)]
-        xmin = min(listy)
-        xmax = max(listy)
+        xmin = 0
+        xmax = max(listy)/2
         map = (
             Map(init_opts=opts.InitOpts(
                 bg_color='#FFFFFF',
-                width="1000px",
-                height="700px"
+                width="680px",
+                height="430px"
             ))
-            .add(series_name="", data_pair=data_pair, maptype="world",  # world，china 省 市
+            .add(series_name="专利数量", data_pair=data_pair, maptype="world",  # world，china 省 市
                  is_map_symbol_show=False, name_map=name_map)  # 更改地图中文显示
 
             .set_series_opts(
@@ -560,195 +585,7 @@ def huitu3():
             )
         )
 
-        geo = (
-            Geo(init_opts=opts.InitOpts(
-                bg_color='#FFFFFF',
-                width="1000px",
-                height="700px"
-            ))
-            ## 新增坐标点
-            .add_coordinate(
-                name='中国',
-                longitude=104,
-                latitude=35,
-            )
-            .add_coordinate(
-                name='日本',
-                longitude=138,
-                latitude=36,
-            )
-            .add_coordinate(
-                name='韩国',
-                longitude=128,
-                latitude=36,
-            )
-            .add_coordinate(
-                name='俄罗斯',
-                longitude=87,
-                latitude=64,
-            )
-            .add_coordinate(
-                name='印度',
-                longitude=78,
-                latitude=20,
-            )
-            .add_coordinate(
-                name='德国',
-                longitude=10,
-                latitude=51,
-            )
-            .add_coordinate(
-                name='美国',
-                longitude=-95,
-                latitude=37,
-            )
-            .add_coordinate(
-                name='加拿大',
-                longitude=-106,
-                latitude=56,
-            )
-
-            # .add_coordinate(
-            #     name='欧洲专利局',
-            #     longitude=5,
-            #     latitude=52,
-            # )
-            # .add_coordinate(
-            #     name='世界知识产权组织',
-            #     longitude=8,
-            #     latitude=46,
-            # )
-            .add_coordinate(
-                name='欧洲专利局',
-                longitude=38.4,
-                latitude=-52,
-            )
-            .add_coordinate(
-                name='世界知识产权组织',
-                longitude=-26.7,
-                latitude=-52.1,
-            )
-            .add_coordinate(
-                name='泰国',
-                longitude=101,
-                latitude=15,
-            )
-            .add_coordinate(
-                name='新加坡',
-                longitude=103.8,
-                latitude=1.3,
-            )
-            .add_coordinate(
-                name='英国',
-                longitude=-3.4,
-                latitude=55.3,
-            )
-            .add_coordinate(
-                name='法国',
-                longitude=2,
-                latitude=46,
-            )
-            .add_coordinate(
-                name='西班牙',
-                longitude=-3.7,
-                latitude=40,
-            )
-            .add_coordinate(
-                name='葡萄牙',
-                longitude=-82,
-                latitude=39.4,
-            )
-            .add_coordinate(
-                name='墨西哥',
-                longitude=-102.5,
-                latitude=23.6,
-            )
-            .add_coordinate(
-                name='丹麦',
-                longitude=9.5,
-                latitude=56.2,
-            )
-            .add_coordinate(
-                name='南非',
-                longitude=22.9,
-                latitude=-30.6,
-            )
-            .add_coordinate(
-                name='巴西',
-                longitude=-51.9,
-                latitude=-14.2,
-            )
-            .add_coordinate(
-                name='波兰',
-                longitude=19,
-                latitude=52,
-            )
-            .add_coordinate(
-                name='土耳其',
-                longitude=35.2,
-                latitude=38.9,
-            )
-            .add_coordinate(
-                name='哈萨克斯坦',
-                longitude=66.9,
-                latitude=48,
-            )
-            .add_coordinate(
-                name='澳大利亚',
-                longitude=133.7,
-                latitude=-25.3,
-            )
-            .add_coordinate(
-                name='欧盟',
-                longitude=4.3,
-                latitude=50.8,
-            )
-            .add_coordinate(
-                name='印度尼西亚',
-                longitude=113.9,
-                latitude=-0.8,
-            )
-            .add_coordinate(
-                name='菲律宾',
-                longitude=122.08,
-                latitude=13.72,
-            )
-            .add_coordinate(
-                name='马来西亚',
-                longitude=102.2,
-                latitude=4.8,
-            )
-            .add_coordinate(
-                name='以色列',
-                longitude=35.2,
-                latitude=31.8,
-            )
-
-            .add_schema(maptype="world")  # 地图类型
-            .add("geo", data_pair, symbol_size=20, )  # 名字 数据 尺寸
-            .set_series_opts(
-                label_opts=opts.LabelOpts(
-                    is_show=True,
-                    position="inside",
-                    formatter="{b}",
-                    font_size=10,
-                    font_style='normal',
-                    font_weight='bold',
-                    color='black'))
-            .set_global_opts(
-                legend_opts=opts.LegendOpts(
-                    is_show=False, ), )
-        )
-        grid = (
-            Grid(init_opts=opts.InitOpts(
-                bg_color='#FFFFFF',
-                width="1000px",
-                height="700px"
-            ))
-            .add(map, grid_opts=opts.GridOpts(), )  # 地图叠加
-            .add(geo, grid_opts=opts.GridOpts())
-        )
-        return grid
+        return map
 
     # 创建图表
     bar_chart = cunchupng()
@@ -934,6 +771,8 @@ def huitu9():
     global document
     dfmb=dfm
     df1 = dfmb[['法律状态事件','申请年', '公开公告号' ]]
+    df1 = df1.astype({'申请年': 'str'})
+    df1 = df1.query('申请年 in %s ' % nianfen)
     series = df1['法律状态事件'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
     df_z = df1[['申请年', '公开公告号']]
     df_11 = pd.DataFrame()
@@ -951,8 +790,10 @@ def huitu9():
         df1['法律状态事件'].str.contains('质押', na=False))| (
         df1['法律状态事件'].str.contains('许可', na=False))]
     print(df1)
+
     df1 = df1.groupby(['申请年', '法律状态事件'], as_index=False)['公开公告号'].count()
     df1 = df1.sort_values(by='申请年', ascending=True)
+
     df1.columns = ['申请年', '法律状态事件', '申请数量']
     print(df1)
 
@@ -1048,15 +889,45 @@ def huitu10():
     for a, b, c in zip(df1['申请年'],df1['IPC分类号'],  df1['申请数量']):
         plt.text(a, b, c, ha='center', va='center', fontsize=8, alpha=0.9)
     st.pyplot(fig)
-huitu1()
-huitu2()
-huitu3()
-huitu4()
-huitu5()
-huitu7()
-huitu8()
-huitu9()
-huitu10()
+if dfm.empty:
+    st.write('该数据范围无相应图表！')
+else:
+    st.subheader("""申请趋势""")
+    st.write('展示该领域专利的有效（蓝）、失效（绿）、审中（黄）以及总申请量（红）的变化趋势，'
+             '通过观察趋势图的整体走势，可以判断专利申请数量是呈增长、下降还是保持稳定。可反应该领域技术创新的活跃程度。'
+             '也可以清晰的看到该领域专利申请的峰值或谷值以及周期性变化，以便于进一步解读分析。')
+    huitu1()
+    st.subheader("""五局流向""")
+    st.write('展示该领域专利在五个较为重要的专利局（中、日、美、韩、欧专局）之间的流动情况，通过技术来源国和技术目标国对应的数量关系判断'
+             '来源国技术创新能力以及目标国的技术需求量。也可表示不同专利局之间的合作、竞争、信息共享等关系，'
+             '有助于促进技术交流和创新发展以及评估行业的技术交流和创新合作活动。')
+    huitu2()
+    st.subheader("""地区分布""")
+    st.write('在世界地图上展示各个国家或地区的专利申请情况。通过颜色标注数量的多少，'
+             '红色表示该地区技术创新活跃、经济发展较快，'
+             '灰色表示该地区技术创新不活跃、经济发展较慢。')
+    huitu3()
+    st.subheader("""申请人排名""")
+    st.write('展示该领域专利申请量排名前十的申请人，反映申请人在专利申请方面的活跃程度和竞争力，突出该领域较为重要的申请人，'
+             '以供其他申请人选取合作对象、明确自身在领域地位、学习同领域申请人的专利布局、分析竞争对手专利申请情况等')
+    huitu4()
+    st.subheader("""协同申请趋势""")
+    st.write('展示该领域专利协同申请的变化趋势，可以看出该领域技术发展是趋向于合作发展、交流互通；还是趋向于独立自主研发。')
+    huitu5()
+    st.subheader("""专利类型构成""")
+    st.write('展示专利类型的构成情况，各种类型专利的占比情况（授权发明为发明申请中已经授权的一部分），发明和实用新型是功能、结构上的创新，外观设计是对产品外观的创新。'
+             '一般发明占比越高，则创新程度越高；实用新型侧重产品的小改进；产品种类多、更新换代快的行业外观设计偏多。')
+    huitu7()
+    st.subheader("""简单法律状态构成""")
+    st.write('该图表通过专利有效/失效/审查中等状态的占比分析，帮助衡量该技术领域的专利活跃程度。'
+             '通常情况下，审中状态的专利占比越大，反映该企业近期创新活力越高。')
+    huitu8()
+    st.subheader("""专利运营情况""")
+    st.write('展示该领域专利转移、许可、质押的情况，反映出该领域专利技术运营活跃程度以及专利成果转化的发展趋势。')
+    huitu9()
+    st.subheader("""技术发展趋势""")
+    st.write('展示该技术领域在主要技术分支的专利申请变化情况，申请趋势上升通常为该技术领域在当前技术分支上的技术研发热度较高。')
+    huitu10()
 #气球
 st.balloons()
 # #雪花
