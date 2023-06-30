@@ -1,4 +1,4 @@
 openpyxl==3.0.10
 pygwalker==0.1.9.1
 matplotlib==3.5.2
-pyecharts==1.9.1
+pyecharts==2.0.3
