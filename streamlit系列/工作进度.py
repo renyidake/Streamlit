@@ -240,7 +240,7 @@ uploaded_files = st.file_uploader('上传Excel文件', accept_multiple_files=Tru
 
 if not uploaded_files:
     def load_df():
-        return pd.read_excel('streamlit系列/分析部工作进度表.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+        return pd.read_excel('streamlit系列/分析部工作进度表.xlsx')  # streamlit系列/2020-2022中之信.xlsx
 
 
     df = load_df()
