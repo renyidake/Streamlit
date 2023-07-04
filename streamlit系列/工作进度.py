@@ -315,12 +315,15 @@ def huitu1():
     plt.xticks(size=10)
     plt.xlim(0, 100)
 
+
+
     ax2 = ax1.twiny() #共享Y轴
     ax2.spines['right'].set_color('none')  # 上边框
     ax2.xaxis.set_tick_params(labelcolor="#f5616f")
     ax2.barh(df1['项目名称'], df1['项目进度'], color="#3685fe", alpha=0.3, tick_label=df1['项目名称'])
     lt=['进度及时间','类型','人员','目标及时间']
     plt.xticks([1,25,50,75],lt,size=10)
+    plt.xlim(0, 100)
 
 
     # plt.figure(dpi=720)  # 配置画布大小，分辨率
