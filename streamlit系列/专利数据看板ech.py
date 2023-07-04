@@ -17,8 +17,8 @@ from matplotlib.ticker import MaxNLocator
 import base64
 from pandas.api.types import CategoricalDtype
 
-# 加载自定义字体文件
-mpl.font_manager.fontManager.addfont('streamlit系列/simhei.ttf')
+# # 加载自定义字体文件
+# mpl.font_manager.fontManager.addfont('streamlit系列/simhei.ttf')
 
 mpl.rcParams['font.sans-serif'] = ["SimHei"]
 # 正常显示中文字符
@@ -263,12 +263,12 @@ st.set_page_config(initial_sidebar_state='collapsed',layout='wide')
 #
 #
 # df = load_df()
-st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
+st.image("新不二LOGO.png")  # streamlit系列/新不二LOGO.png
 uploaded_files = st.file_uploader('上传Excel文件', accept_multiple_files=True, type='xlsx')
 
 if not uploaded_files:
     def load_df():
-        return pd.read_excel('streamlit系列/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+        return pd.read_excel('AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
     df = load_df()
 else:
     for file in uploaded_files:
@@ -1772,8 +1772,9 @@ def huitu11():
             .add(listx[0],
                  nodes,
                  links,
-                 repulsion=200,
+                 repulsion=150,
                  layout="force",
+                 edge_length=120,
                  gravity=0.2,
                  is_draggable=True,
                  linestyle_opts=opts.LineStyleOpts(
@@ -1808,10 +1809,10 @@ def huitu11():
             #      ),  # 线条配置
             #
             #      )
-            .set_colors(
-                ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
-                 "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
-                 "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
+            # .set_colors(
+            #     ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
+            #      "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
+            #      "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
             .set_global_opts(
                 toolbox_opts=opts.ToolboxOpts(
                     orient='horizontal',  # 工具箱的方向，可选值为 'horizontal' 或 'vertical'
@@ -1830,10 +1831,23 @@ def huitu11():
                     border_color="transparent",
                 ), )
             .set_series_opts(
+                itemstyle_opts=opts.ItemStyleOpts(color="rgb(80,196,143)",  # 节点颜色
+                                                  border_color="rgb(245,97,111)",  # 节点边线颜色
+                                                  border_width=1,  # 节点边线宽度
+                                                  opacity=0.9,  # 节点透明度
+                                                  ),
+                linestyle_opts=opts.LineStyleOpts(is_show=True,
+                                                  width=1,
+                                                  opacity=0.6,
+                                                  curve=0.2,  # 弯曲度
+                                                  type_="solid",  # 线条类型 'solid', 'dashed', 'dotted'
+                                                  color="red",
+                                                  ),
                 label_opts=opts.LabelOpts(
                     is_show=True,
-                    position="top",
-                    font_size=12,
+                    # position="top",
+                    color="rgb(54,133,254)",
+                    font_size=10,
                     font_style='normal',  # 正常
                     font_weight='bold',  # 加粗
                     # color='auto',  # 系列颜色
@@ -2163,12 +2177,14 @@ def huitu13():
                     "value": int(df_22.iat[i, 2])}
             links3.append(link)
         c = (
-            Graph()
+            Graph(init_opts=opts.InitOpts(
+                    bg_color='#FFFFFF',))
             .add(listx[0],
                  nodes,
                  links,
-                 repulsion=200,
+                 repulsion=150,
                  layout="force",
+                 edge_length=120,
                  gravity=0.2,
                  is_draggable=True,
                  linestyle_opts=opts.LineStyleOpts(
@@ -2201,10 +2217,10 @@ def huitu13():
             #      ),  # 线条配置
             #
             #      )
-            .set_colors(
-                ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
-                 "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
-                 "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
+            # .set_colors(
+            #     ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
+            #      "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
+            #      "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
             .set_global_opts(
                 toolbox_opts=opts.ToolboxOpts(
                     orient='horizontal',  # 工具箱的方向，可选值为 'horizontal' 或 'vertical'
@@ -2219,10 +2235,23 @@ def huitu13():
                                                          border_color="transparent",
                                                          ), )
             .set_series_opts(
+                itemstyle_opts=opts.ItemStyleOpts(color="rgb(80,196,143)",  # 节点颜色
+                                                  border_color="rgb(245,97,111)",  # 节点边线颜色
+                                                  border_width=1,  # 节点边线宽度
+                                                  opacity=0.9,  # 节点透明度
+                                                  ),
+                linestyle_opts=opts.LineStyleOpts(is_show=True,
+                                                  width=1,
+                                                  opacity=0.6,
+                                                  curve=0.2,  # 弯曲度
+                                                  type_="solid",  # 线条类型 'solid', 'dashed', 'dotted'
+                                                  color="red",
+                                                  ),
                 label_opts=opts.LabelOpts(
                     is_show=True,
-                    position="top",
-                    font_size=12,
+                    # position="top",
+                    color="rgb(54,133,254)",
+                    font_size=10,
                     font_style='normal',  # 正常
                     font_weight='bold',  # 加粗
                     # color='auto',  # 系列颜色
@@ -3000,5 +3029,5 @@ else:
     huitu14()
 #气球
 st.balloons()
-# #雪花
-# st.snow()
+#雪花
+st.snow()
