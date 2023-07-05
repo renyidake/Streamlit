@@ -17,8 +17,8 @@ from matplotlib.ticker import MaxNLocator
 import base64
 from pandas.api.types import CategoricalDtype
 
-# # 加载自定义字体文件
-# mpl.font_manager.fontManager.addfont('streamlit系列/simhei.ttf')
+# 加载自定义字体文件
+mpl.font_manager.fontManager.addfont('streamlit系列/simhei.ttf')
 
 mpl.rcParams['font.sans-serif'] = ["SimHei"]
 # 正常显示中文字符
@@ -229,7 +229,7 @@ dishi='台州'
 
 
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
-st.set_page_config(initial_sidebar_state='collapsed',layout='wide')
+st.set_page_config(initial_sidebar_state='auto',layout='wide')
 # # 添加背景
 # def add_local_backgound_image_(image):
 #     with open(image, "rb") as image_file:
@@ -263,12 +263,12 @@ st.set_page_config(initial_sidebar_state='collapsed',layout='wide')
 #
 #
 # df = load_df()
-st.image("新不二LOGO.png")  # streamlit系列/新不二LOGO.png
+st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
 uploaded_files = st.file_uploader('上传Excel文件', accept_multiple_files=True, type='xlsx')
 
 if not uploaded_files:
     def load_df():
-        return pd.read_excel('AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+        return pd.read_excel('streamlit系列/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
     df = load_df()
 else:
     for file in uploaded_files:
