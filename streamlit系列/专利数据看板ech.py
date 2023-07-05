@@ -17,8 +17,8 @@ from matplotlib.ticker import MaxNLocator
 import base64
 from pandas.api.types import CategoricalDtype
 
-# 加载自定义字体文件
-mpl.font_manager.fontManager.addfont('streamlit系列/simhei.ttf')
+# # 加载自定义字体文件
+# mpl.font_manager.fontManager.addfont('streamlit系列/simhei.ttf')
 
 mpl.rcParams['font.sans-serif'] = ["SimHei"]
 # 正常显示中文字符
@@ -263,12 +263,12 @@ st.set_page_config(initial_sidebar_state='collapsed',layout='wide')
 #
 #
 # df = load_df()
-st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
+st.image("新不二LOGO.png")  # streamlit系列/新不二LOGO.png
 uploaded_files = st.file_uploader('上传Excel文件', accept_multiple_files=True, type='xlsx')
 
 if not uploaded_files:
     def load_df():
-        return pd.read_excel('streamlit系列/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+        return pd.read_excel('AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
     df = load_df()
 else:
     for file in uploaded_files:
@@ -659,129 +659,133 @@ def huitu2():
         global biaoji
         dfmb=dfm
         df1 = dfmb.query('受理局 in %s ' % wuju)
-
-        df1 = df1[['公开公告号', '受理局', '优先权国家']]
-        series = df1['优先权国家'].str.split('|', expand=True)  # 按照 分隔符拆分字段
-        df_z = df1[['公开公告号', '受理局']]
-        df_11 = pd.DataFrame()
-        for i in range(0, series.columns.size):
-            df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
-            df_l.columns = ['公开公告号', '受理局', '优先权国家']
-            df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
-        df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
-        df_11 = pd.concat([df_11['公开公告号'],df_11['受理局'], df_11['优先权国家'].str.strip()], axis=1)  # 用strip（）删除字符串头尾多余空格
-        for i in range(0,len(df_11['优先权国家'])):
-            if df_11.iat[i,2]=='CN':
-                df_11.iat[i,2] = '中国'
-            if df_11.iat[i,2]=='US':
-                df_11.iat[i,2] = '美国'
-            if df_11.iat[i,2]=='JP':
-                df_11.iat[i,2] = '日本'
-            if df_11.iat[i,2]=='KR':
-                df_11.iat[i,2] = '韩国'
-            if df_11.iat[i,2]=='EP':
-                df_11.iat[i,2] = '欧洲专利局'
-        df_11=df_11.query('优先权国家 in %s ' % wuju)
-        df_11=df_11.drop_duplicates()
-        df_11 = df_11.groupby(['受理局', '优先权国家'], as_index=False)['公开公告号'].count()
-        df_11 = df_11.sort_values(by=['受理局', '优先权国家'], ascending=True)
-        df_11.columns = ['受理局', '优先权国家', '申请数量']
-        df1=df_11
-
-
         if df1.empty:
             biaoji=0
         else:
 
-            xmax = max(df1['申请数量'])
-            xmin = min(df1['申请数量'])
+            df1 = df1[['公开公告号', '受理局', '优先权国家']]
+            series = df1['优先权国家'].str.split('|', expand=True)  # 按照 分隔符拆分字段
+            df_z = df1[['公开公告号', '受理局']]
+            df_11 = pd.DataFrame()
+            for i in range(0, series.columns.size):
+                df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
+                df_l.columns = ['公开公告号', '受理局', '优先权国家']
+                df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
+            df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
+            df_11 = pd.concat([df_11['公开公告号'],df_11['受理局'], df_11['优先权国家'].str.strip()], axis=1)  # 用strip（）删除字符串头尾多余空格
+            for i in range(0,len(df_11['优先权国家'])):
+                if df_11.iat[i,2]=='CN':
+                    df_11.iat[i,2] = '中国'
+                if df_11.iat[i,2]=='US':
+                    df_11.iat[i,2] = '美国'
+                if df_11.iat[i,2]=='JP':
+                    df_11.iat[i,2] = '日本'
+                if df_11.iat[i,2]=='KR':
+                    df_11.iat[i,2] = '韩国'
+                if df_11.iat[i,2]=='EP':
+                    df_11.iat[i,2] = '欧洲专利局'
+            df_11=df_11.query('优先权国家 in %s ' % wuju)
+            df_11=df_11.drop_duplicates()
+            df_11 = df_11.groupby(['受理局', '优先权国家'], as_index=False)['公开公告号'].count()
+            df_11 = df_11.sort_values(by=['受理局', '优先权国家'], ascending=True)
+            df_11.columns = ['受理局', '优先权国家', '申请数量']
+            df1=df_11
 
-            # 类别一数据
-            df2 = df1.loc[(df1['受理局'] == '中国')]
-            # 类别二数据
-            df3 = df1.loc[(df1['受理局'] == '美国')]
-            # 类别三数据
-            df4 = df1.loc[(df1['受理局'] == '日本')]
-            df5 = df1.loc[(df1['受理局'] == '韩国')]
-            df6 = df1.loc[(df1['受理局'] == '欧洲专利局')]
+            if df1.empty:
+                biaoji = 0
+            else:
 
 
-            # listx=['中国','日本','欧洲专利局','美国','韩国']
-            listx=list(df2['优先权国家'])
-            listy2 = list(df2['申请数量'])
-            listy3 = list(df3['申请数量'])
-            listy4 = list(df4['申请数量'])
-            listy5 = list(df5['申请数量'])
-            listy6 = list(df6['申请数量'])
 
-            c = (
-                EffectScatter(init_opts=opts.InitOpts(
-                    bg_color='#FFFFFF'))
-                .add_xaxis(listx)
-                .add_yaxis('中国', listy2)
-                .add_yaxis('美国', listy3)
-                .add_yaxis('日本', listy4)
-                .add_yaxis('韩国', listy5)
-                .add_yaxis('欧洲专利局', listy6)
-                .set_colors(
-                    ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
-                     "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
-                     "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
-                .set_global_opts(
-                    toolbox_opts=opts.ToolboxOpts(
-                        orient='horizontal',  # 工具箱的方向，可选值为 'horizontal' 或 'vertical'
-                        item_size=15,
-                        item_gap=5,
-                        feature=toolbox_opts2['feature']
-                    ),
+                xmax = max(df1['申请数量'])
+                xmin = min(df1['申请数量'])
 
-                    visualmap_opts=opts.VisualMapOpts(is_show=False, type_="size", max_=xmax, min_=xmin),  # 气泡尺寸大小范围
-                    xaxis_opts=opts.AxisOpts(
-                        type_="category",  # 坐标轴类型
-                        name='技术来源地区',  # 坐标轴名字
-                        name_location="end",  # 坐标轴位置'start', 'middle' 或者 'center','end'
-                        axislabel_opts=opts.LabelOpts(
+                # 类别一数据
+                df2 = df1.loc[(df1['受理局'] == '中国')]
+                # 类别二数据
+                df3 = df1.loc[(df1['受理局'] == '美国')]
+                # 类别三数据
+                df4 = df1.loc[(df1['受理局'] == '日本')]
+                df5 = df1.loc[(df1['受理局'] == '韩国')]
+                df6 = df1.loc[(df1['受理局'] == '欧洲专利局')]
 
+
+                # listx=['中国','日本','欧洲专利局','美国','韩国']
+                listx=list(df2['优先权国家'])
+                listy2 = list(df2['申请数量'])
+                listy3 = list(df3['申请数量'])
+                listy4 = list(df4['申请数量'])
+                listy5 = list(df5['申请数量'])
+                listy6 = list(df6['申请数量'])
+
+                c = (
+                    EffectScatter(init_opts=opts.InitOpts(
+                        bg_color='#FFFFFF'))
+                    .add_xaxis(listx)
+                    .add_yaxis('中国', listy2)
+                    .add_yaxis('美国', listy3)
+                    .add_yaxis('日本', listy4)
+                    .add_yaxis('韩国', listy5)
+                    .add_yaxis('欧洲专利局', listy6)
+                    .set_colors(
+                        ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
+                         "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
+                         "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
+                    .set_global_opts(
+                        toolbox_opts=opts.ToolboxOpts(
+                            orient='horizontal',  # 工具箱的方向，可选值为 'horizontal' 或 'vertical'
+                            item_size=15,
+                            item_gap=5,
+                            feature=toolbox_opts2['feature']
+                        ),
+
+                        visualmap_opts=opts.VisualMapOpts(is_show=False, type_="size", max_=xmax, min_=xmin),  # 气泡尺寸大小范围
+                        xaxis_opts=opts.AxisOpts(
+                            type_="category",  # 坐标轴类型
+                            name='技术来源地区',  # 坐标轴名字
+                            name_location="end",  # 坐标轴位置'start', 'middle' 或者 'center','end'
+                            axislabel_opts=opts.LabelOpts(
+
+                                font_size=15,
+                                font_style='normal',
+                                font_weight='bold',
+                            )
+                        ),
+                        yaxis_opts=opts.AxisOpts(
+                            type_="value",
+                            name='专利数量',  # 坐标轴名字
+                            name_location="end",
+                            axislabel_opts=opts.LabelOpts(
+
+                                font_size=15,
+                                font_style='normal',
+                                font_weight='bold',
+                            )
+                        ),
+                        legend_opts=opts.LegendOpts(
+                            type_='plain', is_show=True,
+                            pos_right='right',  # 右边
+                            orient='vertical',
+                            pos_top='10%',  # 距离上边界15%
+                            item_width=37,  # 图例宽
+                            item_height=21,  # 图例高
+                            background_color="transparent",
+                            border_color="transparent",
+                        ),
+                    )
+                    .set_series_opts(
+                        label_opts=opts.LabelOpts(
+                            is_show=True,
+                            position="right",
                             font_size=15,
-                            font_style='normal',
-                            font_weight='bold',
-                        )
-                    ),
-                    yaxis_opts=opts.AxisOpts(
-                        type_="value",
-                        name='专利数量',  # 坐标轴名字
-                        name_location="end",
-                        axislabel_opts=opts.LabelOpts(
-
-                            font_size=15,
-                            font_style='normal',
-                            font_weight='bold',
-                        )
-                    ),
-                    legend_opts=opts.LegendOpts(
-                        type_='plain', is_show=True,
-                        pos_right='right',  # 右边
-                        orient='vertical',
-                        pos_top='10%',  # 距离上边界15%
-                        item_width=37,  # 图例宽
-                        item_height=21,  # 图例高
-                        background_color="transparent",
-                        border_color="transparent",
-                    ),
+                            font_style='normal',  # 字体 正常 倾斜
+                            font_weight='bold',  # 加粗
+                            color='auto',  # 系列颜色
+                            # font_family= 'serif',#
+                        ),  # 标签配置项
+                    )
                 )
-                .set_series_opts(
-                    label_opts=opts.LabelOpts(
-                        is_show=True,
-                        position="right",
-                        font_size=15,
-                        font_style='normal',  # 字体 正常 倾斜
-                        font_weight='bold',  # 加粗
-                        color='auto',  # 系列颜色
-                        # font_family= 'serif',#
-                    ),  # 标签配置项
-                )
-            )
-            return c
+                return c
     # 创建图表
     bar_chart = cunchupng()
     if biaoji !=0:
