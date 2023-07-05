@@ -16,6 +16,7 @@ from pyecharts.globals import SymbolType
 from matplotlib.ticker import MaxNLocator
 import base64
 from pandas.api.types import CategoricalDtype
+import time
 
 # 加载自定义字体文件
 mpl.font_manager.fontManager.addfont('streamlit系列/simhei.ttf')
@@ -264,7 +265,8 @@ st.set_page_config(initial_sidebar_state='expanded',layout='wide')
 #
 # df = load_df()
 st.image("streamlit系列/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
-uploaded_files = st.file_uploader('上传Excel文件', accept_multiple_files=True, type='xlsx')
+uploaded_files = st.file_uploader('上传Excel文件,请务必包含：公开(公告)号、受理局、标题、专利类型、申请年、优先权国家、[标]当前申请(专利权)人、当前申请(专利权)人数量、发明人、发明人数量、IPC分类号、IPC主分类号(小类)、'
+                                  '简单法律状态、法律状态/事件、当前申请(专利权)人州/省、当前申请(专利权)人地市、当前申请(专利权)人区县，请参照下表！', accept_multiple_files=True, type='xlsx')
 
 if not uploaded_files:
     def load_df():
@@ -368,7 +370,7 @@ zongshenqing = int(dfm['公开公告号'].count())
 shouquan = dfm.loc[dfm['法律状态事件'].str.contains('授权', na=False), :]
 shouquan = shouquan['法律状态事件'].count()
 
-bohui = dfm.loc[dfm['法律状态事件'].str.contains('驳回', na=False), :]
+bohui = dfm.loc[dfm['法律状态事件'].str.contains('驳回', na=False),:]
 bohui = bohui['法律状态事件'].count()
 
 faming = dfm.loc[(dfm['专利类型'] == '发明申请')| (dfm['专利类型'] == '授权发明')]
@@ -451,8 +453,9 @@ toolbox_opts3 = {
 biaoji=1
 ##全球专利发展趋势分析
 def huitu1():
-    global biaoji
+
     def cunchupng():
+        global biaoji
         dfmb=dfm
         df1 = dfmb[['公开公告号', '申请年']]
         df1 = df1.astype({'申请年': 'str'})
@@ -808,7 +811,6 @@ def huitu2():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 ##全球 地区分布分析
 def huitu3():
-    global biaoji
     def cunchupng() -> map:
         global biaoji
         dfmb=dfm
@@ -879,7 +881,6 @@ def huitu3():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
     #申请人排名
 def huitu4():
-    global biaoji
     def cunchupng():
         global biaoji
         dfmb=dfm
@@ -990,8 +991,8 @@ def huitu4():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 ##协同申请趋势
 def huitu5():
-    global biaoji
     def cunchupng():
+        global biaoji
         dfmb=dfm.loc[(dfm['当前申请专利权人数量'] != '-') & (dfm['当前申请专利权人数量'] != '1')]
         df1 = dfmb[['公开公告号', '申请年']]
         df1 = df1.astype({'申请年': 'str'})
@@ -1096,8 +1097,8 @@ def huitu5():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 ##专利类型构成
 def huitu7():
-    global biaoji
     def cunchupng():
+        global biaoji
         dfmb = dfm
         df1 = dfmb[['专利类型', '公开公告号']]
         df1 = df1.loc[(df1['专利类型'] != '-')]
@@ -1181,8 +1182,8 @@ def huitu7():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 ##简单法律状态构成
 def huitu8():
-    global biaoji
     def cunchupng():
+        global biaoji
         dfmb = dfm
         df1 = dfmb[['简单法律状态', '公开公告号']]
         df1 = df1.groupby('简单法律状态', as_index=False)['公开公告号'].count()
@@ -1269,7 +1270,6 @@ def huitu8():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 ##专利运营情况
 def huitu9():
-    global biaoji
     def cunchupng():
         global biaoji
         dfmb=dfm
@@ -1431,7 +1431,6 @@ def huitu9():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 #基础功效 前五ipc 申请趋势
 def huitu10():
-    global biaoji
     def cunchupng():
         global biaoji
         dfmb=dfm
@@ -1647,267 +1646,269 @@ def huitu10():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 #前三联合申请人的联合情况
 def huitu11():
-    global biaoji
     def cunchupng():
         global biaoji
         dfmb = dfm.loc[(dfm['当前申请专利权人数量'] != '-')]
         dfmb = dfmb.astype({'当前申请专利权人数量': 'int'})
         dfmb = dfmb.loc[(dfmb['当前申请专利权人数量'] != 1)]
         dfm1 = dfmb[['公开公告号', '当前申请专利权人']]
-        series = dfm1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
-        df_z = dfm1[['公开公告号']]
-        dfx = pd.DataFrame()
-        for i in range(0, series.columns.size):
-            df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
-            df_l.columns = ['公开公告号', '当前申请专利权人']
-            dfx = pd.concat([dfx, df_l])  ##所有新表叠加
-        dfx.dropna(inplace=True)  # 删除空数据，获得有效数据
-        dfx = pd.concat([dfx['公开公告号'], dfx['当前申请专利权人'].str.strip()], axis=1)  # 用strip（）删除字符串头尾多余空格
-        dfx = dfx.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
-        dfx = dfx.sort_values(by='公开公告号', ascending=False)
-        dfx.columns = ['当前申请专利权人', '申请数量']
-        dfx = dfx.head(10)
-        listx = list(dfx['当前申请专利权人'])
-
-
-        # 节点数据
-        df1 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[0], na=False), :]
-        if df1.empty:
+        if dfm1.empty:
             biaoji=0
         else:
-            df1 = df1.astype({'当前申请专利权人数量': 'int'})
-            df1 = df1.loc[(df1['当前申请专利权人数量'] != 1)]
-            series = df1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
-            df_z = df1[['公开公告号']]
-            df_11 = pd.DataFrame()
+            series = dfm1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
+            df_z = dfm1[['公开公告号']]
+            dfx = pd.DataFrame()
             for i in range(0, series.columns.size):
                 df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
                 df_l.columns = ['公开公告号', '当前申请专利权人']
-                df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
-            df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
-            df_11 = pd.concat([df_11['公开公告号'], df_11['当前申请专利权人'].str.strip()],
-                              axis=1)  # 用strip（）删除字符串头尾多余空格
-            df_11 = df_11.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
-            df_11 = df_11.sort_values(by='公开公告号', ascending=False)
-            df_11.columns = ['当前申请专利权人', '申请数量']
+                dfx = pd.concat([dfx, df_l])  ##所有新表叠加
+            dfx.dropna(inplace=True)  # 删除空数据，获得有效数据
+            dfx = pd.concat([dfx['公开公告号'], dfx['当前申请专利权人'].str.strip()], axis=1)  # 用strip（）删除字符串头尾多余空格
+            dfx = dfx.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
+            dfx = dfx.sort_values(by='公开公告号', ascending=False)
+            dfx.columns = ['当前申请专利权人', '申请数量']
+            dfx = dfx.head(10)
+            listx = list(dfx['当前申请专利权人'])
 
-            # 关系数据
-            df2 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[0], na=False), :]
-            df2 = df2[['公开公告号', '当前申请专利权人']]
-            series = df2['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
-            df_z = df2[['公开公告号']]
-            df_z = pd.concat([df_z, series[0]], axis=1)  # 这里提取第一申请人的时候 未去除空格 会导致连接数据找不到中心节点 无法显示连接关系
-            df_z.columns = ['公开公告号', '第一当前申请专利权人']
-            df_22 = pd.DataFrame()
-            for i in range(1, series.columns.size):
-                df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
-                df_l.columns = ['公开公告号', '第一申请人', '联合申请人']
-                df_22 = pd.concat([df_22, df_l])  ##所有新表叠加
-            df_22.dropna(inplace=True)  # 删除空数据，获得有效数据
-            df_22 = pd.concat([df_22['公开公告号'], df_22['第一申请人'], df_22['联合申请人'].str.strip()],
-                              axis=1)  # 用strip（）删除字符串头尾多余空格
-            df_22 = df_22.groupby(['第一申请人', '联合申请人'], as_index=False)['公开公告号'].count()
-            df_22 = df_22.sort_values(by='公开公告号', ascending=False)
-            df_22.columns = ['第一申请人', '联合申请人', '申请数量']
 
-            nodes = []
-            for i in range(len(df_11)):
-                node = {"name": str(df_11.iat[i, 0]).strip(), "symbolSize": int(df_11.iat[i, 1]),"value":int(df_11.iat[i, 1])}
+            # 节点数据
+            df1 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[0], na=False), :]
+            if df1.empty:
+                biaoji=0
+            else:
+                df1 = df1.astype({'当前申请专利权人数量': 'int'})
+                df1 = df1.loc[(df1['当前申请专利权人数量'] != 1)]
+                series = df1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
+                df_z = df1[['公开公告号']]
+                df_11 = pd.DataFrame()
+                for i in range(0, series.columns.size):
+                    df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
+                    df_l.columns = ['公开公告号', '当前申请专利权人']
+                    df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
+                df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
+                df_11 = pd.concat([df_11['公开公告号'], df_11['当前申请专利权人'].str.strip()],
+                                  axis=1)  # 用strip（）删除字符串头尾多余空格
+                df_11 = df_11.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
+                df_11 = df_11.sort_values(by='公开公告号', ascending=False)
+                df_11.columns = ['当前申请专利权人', '申请数量']
 
-                nodes.append(node)
+                # 关系数据
+                df2 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[0], na=False), :]
+                df2 = df2[['公开公告号', '当前申请专利权人']]
+                series = df2['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
+                df_z = df2[['公开公告号']]
+                df_z = pd.concat([df_z, series[0]], axis=1)  # 这里提取第一申请人的时候 未去除空格 会导致连接数据找不到中心节点 无法显示连接关系
+                df_z.columns = ['公开公告号', '第一当前申请专利权人']
+                df_22 = pd.DataFrame()
+                for i in range(1, series.columns.size):
+                    df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
+                    df_l.columns = ['公开公告号', '第一申请人', '联合申请人']
+                    df_22 = pd.concat([df_22, df_l])  ##所有新表叠加
+                df_22.dropna(inplace=True)  # 删除空数据，获得有效数据
+                df_22 = pd.concat([df_22['公开公告号'], df_22['第一申请人'], df_22['联合申请人'].str.strip()],
+                                  axis=1)  # 用strip（）删除字符串头尾多余空格
+                df_22 = df_22.groupby(['第一申请人', '联合申请人'], as_index=False)['公开公告号'].count()
+                df_22 = df_22.sort_values(by='公开公告号', ascending=False)
+                df_22.columns = ['第一申请人', '联合申请人', '申请数量']
 
-            links = []
-            for i in range(len(df_22)):
-                link = {"source": str(df_22.iat[i, 0]).strip(), "target": str(df_22.iat[i, 1]).strip(),
-                        "value": int(df_22.iat[i, 2])}
-                links.append(link)
+                nodes = []
+                for i in range(len(df_11)):
+                    node = {"name": str(df_11.iat[i, 0]).strip(), "symbolSize": int(df_11.iat[i, 1]),"value":int(df_11.iat[i, 1])}
 
-            # # 节点数据2
-            # df1 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[1], na=False), :]
-            # df1 = df1.astype({'当前申请专利权人数量': 'int'})
-            # df1 = df1.loc[(df1['当前申请专利权人数量'] != 1)]
-            # series = df1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
-            # df_z = df1[['公开公告号']]
-            # df_11 = pd.DataFrame()
-            # for i in range(0, series.columns.size):
-            #     df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
-            #     df_l.columns = ['公开公告号', '当前申请专利权人']
-            #     df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
-            # df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
-            # df_11 = pd.concat([df_11['公开公告号'], df_11['当前申请专利权人'].str.strip()],
-            #                   axis=1)  # 用strip（）删除字符串头尾多余空格
-            # df_11 = df_11.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
-            # df_11 = df_11.sort_values(by='公开公告号', ascending=False)
-            # df_11.columns = ['当前申请专利权人', '申请数量']
-            #
-            # # 关系数据
-            # df2 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[1], na=False), :]
-            # df2 = df2[['公开公告号', '当前申请专利权人']]
-            # series = df2['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
-            # df_z = df2[['公开公告号']]
-            # df_z = pd.concat([df_z, series[0]], axis=1)  # 这里提取第一申请人的时候 未去除空格 会导致连接数据找不到中心节点 无法显示连接关系
-            # df_z.columns = ['公开公告号', '第一当前申请专利权人']
-            # df_22 = pd.DataFrame()
-            # for i in range(1, series.columns.size):
-            #     df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
-            #     df_l.columns = ['公开公告号', '第一申请人', '联合申请人']
-            #     df_22 = pd.concat([df_22, df_l])  ##所有新表叠加
-            # df_22.dropna(inplace=True)  # 删除空数据，获得有效数据
-            # df_22 = pd.concat([df_22['公开公告号'], df_22['第一申请人'], df_22['联合申请人'].str.strip()],
-            #                   axis=1)  # 用strip（）删除字符串头尾多余空格
-            # df_22 = df_22.groupby(['第一申请人', '联合申请人'], as_index=False)['公开公告号'].count()
-            # df_22 = df_22.sort_values(by='公开公告号', ascending=False)
-            # df_22.columns = ['第一申请人', '联合申请人', '申请数量']
-            #
-            # nodes2 = []
-            # for i in range(len(df_11)):
-            #     node = {"name": str(df_11.iat[i, 0]).strip(), "symbolSize": int(df_11.iat[i, 1]),"value":int(df_11.iat[i, 1])}
-            #
-            #     nodes2.append(node)
-            #
-            # links2 = []
-            # for i in range(len(df_22)):
-            #     link = {"source": str(df_22.iat[i, 0]).strip(), "target": str(df_22.iat[i, 1]).strip(),
-            #             "value": int(df_22.iat[i, 2])}
-            #     links2.append(link)
-            #
-            # # 节点数据3
-            # df1 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[2], na=False), :]
-            # df1 = df1.astype({'当前申请专利权人数量': 'int'})
-            # df1 = df1.loc[(df1['当前申请专利权人数量'] != 1)]
-            # series = df1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
-            # df_z = df1[['公开公告号']]
-            # df_11 = pd.DataFrame()
-            # for i in range(0, series.columns.size):
-            #     df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
-            #     df_l.columns = ['公开公告号', '当前申请专利权人']
-            #     df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
-            # df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
-            # df_11 = pd.concat([df_11['公开公告号'], df_11['当前申请专利权人'].str.strip()],
-            #                   axis=1)  # 用strip（）删除字符串头尾多余空格
-            # df_11 = df_11.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
-            # df_11 = df_11.sort_values(by='公开公告号', ascending=False)
-            # df_11.columns = ['当前申请专利权人', '申请数量']
-            #
-            # # 关系数据3
-            # df2 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[2], na=False), :]
-            # df2 = df2[['公开公告号', '当前申请专利权人']]
-            # series = df2['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
-            # df_z = df2[['公开公告号']]
-            # df_z = pd.concat([df_z, series[0]], axis=1)  # 这里提取第一申请人的时候 未去除空格 会导致连接数据找不到中心节点 无法显示连接关系
-            # df_z.columns = ['公开公告号', '第一当前申请专利权人']
-            # df_22 = pd.DataFrame()
-            # for i in range(1, series.columns.size):
-            #     df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
-            #     df_l.columns = ['公开公告号', '第一申请人', '联合申请人']
-            #     df_22 = pd.concat([df_22, df_l])  ##所有新表叠加
-            # df_22.dropna(inplace=True)  # 删除空数据，获得有效数据
-            # df_22 = pd.concat([df_22['公开公告号'], df_22['第一申请人'], df_22['联合申请人'].str.strip()],
-            #                   axis=1)  # 用strip（）删除字符串头尾多余空格
-            # df_22 = df_22.groupby(['第一申请人', '联合申请人'], as_index=False)['公开公告号'].count()
-            # df_22 = df_22.sort_values(by='公开公告号', ascending=False)
-            # df_22.columns = ['第一申请人', '联合申请人', '申请数量']
-            #
-            # nodes3 = []
-            # for i in range(len(df_11)):
-            #     node = {"name": str(df_11.iat[i, 0]).strip(), "symbolSize": int(df_11.iat[i, 1]),"value":int(df_11.iat[i, 1])}
-            #
-            #     nodes3.append(node)
-            #
-            # links3 = []
-            # for i in range(len(df_22)):
-            #     link = {"source": str(df_22.iat[i, 0]).strip(), "target": str(df_22.iat[i, 1]).strip(),
-            #             "value": int(df_22.iat[i, 2])}
-            #     links3.append(link)
-            c = (
-                Graph()
-                .add(listx[0],
-                     nodes,
-                     links,
-                     repulsion=150,
-                     layout="force",
-                     edge_length=120,
-                     gravity=0.2,
-                     is_draggable=True,
-                     linestyle_opts=opts.LineStyleOpts(
-                         width=2,
-                         curve=0.3,
-                     ),  # 线条配置
+                    nodes.append(node)
 
-                     )
-                # .add(listx[1],
-                #      nodes2,
-                #      links2,
-                #      repulsion=200,
-                #      layout="force",
-                #      gravity=0.2,
-                #      is_draggable=True,
-                #      linestyle_opts=opts.LineStyleOpts(
-                #          width=2,
-                #          curve=0.3,
-                #      ),  # 线条配置
+                links = []
+                for i in range(len(df_22)):
+                    link = {"source": str(df_22.iat[i, 0]).strip(), "target": str(df_22.iat[i, 1]).strip(),
+                            "value": int(df_22.iat[i, 2])}
+                    links.append(link)
+
+                # # 节点数据2
+                # df1 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[1], na=False), :]
+                # df1 = df1.astype({'当前申请专利权人数量': 'int'})
+                # df1 = df1.loc[(df1['当前申请专利权人数量'] != 1)]
+                # series = df1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
+                # df_z = df1[['公开公告号']]
+                # df_11 = pd.DataFrame()
+                # for i in range(0, series.columns.size):
+                #     df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
+                #     df_l.columns = ['公开公告号', '当前申请专利权人']
+                #     df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
+                # df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
+                # df_11 = pd.concat([df_11['公开公告号'], df_11['当前申请专利权人'].str.strip()],
+                #                   axis=1)  # 用strip（）删除字符串头尾多余空格
+                # df_11 = df_11.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
+                # df_11 = df_11.sort_values(by='公开公告号', ascending=False)
+                # df_11.columns = ['当前申请专利权人', '申请数量']
                 #
-                #      )
-                # .add(listx[2],
-                #      nodes3,
-                #      links3,
-                #      repulsion=200,
-                #      layout="force",  # 引力布局
-                #      gravity=0.2,  # 斥力因子
-                #      is_draggable= True,
-                #      linestyle_opts=opts.LineStyleOpts(
-                #          width=2,
-                #          curve=0.3,
-                #      ),  # 线条配置
+                # # 关系数据
+                # df2 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[1], na=False), :]
+                # df2 = df2[['公开公告号', '当前申请专利权人']]
+                # series = df2['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
+                # df_z = df2[['公开公告号']]
+                # df_z = pd.concat([df_z, series[0]], axis=1)  # 这里提取第一申请人的时候 未去除空格 会导致连接数据找不到中心节点 无法显示连接关系
+                # df_z.columns = ['公开公告号', '第一当前申请专利权人']
+                # df_22 = pd.DataFrame()
+                # for i in range(1, series.columns.size):
+                #     df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
+                #     df_l.columns = ['公开公告号', '第一申请人', '联合申请人']
+                #     df_22 = pd.concat([df_22, df_l])  ##所有新表叠加
+                # df_22.dropna(inplace=True)  # 删除空数据，获得有效数据
+                # df_22 = pd.concat([df_22['公开公告号'], df_22['第一申请人'], df_22['联合申请人'].str.strip()],
+                #                   axis=1)  # 用strip（）删除字符串头尾多余空格
+                # df_22 = df_22.groupby(['第一申请人', '联合申请人'], as_index=False)['公开公告号'].count()
+                # df_22 = df_22.sort_values(by='公开公告号', ascending=False)
+                # df_22.columns = ['第一申请人', '联合申请人', '申请数量']
                 #
-                #      )
-                # .set_colors(
-                #     ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
-                #      "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
-                #      "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
-                .set_global_opts(
-                    toolbox_opts=opts.ToolboxOpts(
-                        orient='horizontal',  # 工具箱的方向，可选值为 'horizontal' 或 'vertical'
-                        item_size=15,
-                        item_gap=5,
-                        feature=toolbox_opts3['feature']
-                    ),
-                    legend_opts=opts.LegendOpts(
-                        type_='plain', is_show=True,
-                        pos_right='right',  # 右边
-                        orient='vertical',
-                        pos_top='10%',  # 距离上边界15%
-                        item_width=37,  # 图例宽
-                        item_height=21,  # 图例高
-                        background_color="transparent",
-                        border_color="transparent",
-                    ), )
-                .set_series_opts(
-                    itemstyle_opts=opts.ItemStyleOpts(color="rgb(80,196,143)",  # 节点颜色
-                                                      border_color="rgb(245,97,111)",  # 节点边线颜色
-                                                      border_width=1,  # 节点边线宽度
-                                                      opacity=0.9,  # 节点透明度
-                                                      ),
-                    linestyle_opts=opts.LineStyleOpts(is_show=True,
-                                                      width=1,
-                                                      opacity=0.6,
-                                                      curve=0.2,  # 弯曲度
-                                                      type_="solid",  # 线条类型 'solid', 'dashed', 'dotted'
-                                                      color="red",
-                                                      ),
-                    label_opts=opts.LabelOpts(
-                        is_show=True,
-                        # position="top",
-                        color="rgb(54,133,254)",
-                        font_size=10,
-                        font_style='normal',  # 正常
-                        font_weight='bold',  # 加粗
-                        # color='auto',  # 系列颜色
-                        # font_family= 'serif',#
-                    ),  # 标签配置项
+                # nodes2 = []
+                # for i in range(len(df_11)):
+                #     node = {"name": str(df_11.iat[i, 0]).strip(), "symbolSize": int(df_11.iat[i, 1]),"value":int(df_11.iat[i, 1])}
+                #
+                #     nodes2.append(node)
+                #
+                # links2 = []
+                # for i in range(len(df_22)):
+                #     link = {"source": str(df_22.iat[i, 0]).strip(), "target": str(df_22.iat[i, 1]).strip(),
+                #             "value": int(df_22.iat[i, 2])}
+                #     links2.append(link)
+                #
+                # # 节点数据3
+                # df1 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[2], na=False), :]
+                # df1 = df1.astype({'当前申请专利权人数量': 'int'})
+                # df1 = df1.loc[(df1['当前申请专利权人数量'] != 1)]
+                # series = df1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
+                # df_z = df1[['公开公告号']]
+                # df_11 = pd.DataFrame()
+                # for i in range(0, series.columns.size):
+                #     df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
+                #     df_l.columns = ['公开公告号', '当前申请专利权人']
+                #     df_11 = pd.concat([df_11, df_l])  ##所有新表叠加
+                # df_11.dropna(inplace=True)  # 删除空数据，获得有效数据
+                # df_11 = pd.concat([df_11['公开公告号'], df_11['当前申请专利权人'].str.strip()],
+                #                   axis=1)  # 用strip（）删除字符串头尾多余空格
+                # df_11 = df_11.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
+                # df_11 = df_11.sort_values(by='公开公告号', ascending=False)
+                # df_11.columns = ['当前申请专利权人', '申请数量']
+                #
+                # # 关系数据3
+                # df2 = dfmb.loc[dfmb['当前申请专利权人'].str.contains(listx[2], na=False), :]
+                # df2 = df2[['公开公告号', '当前申请专利权人']]
+                # series = df2['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
+                # df_z = df2[['公开公告号']]
+                # df_z = pd.concat([df_z, series[0]], axis=1)  # 这里提取第一申请人的时候 未去除空格 会导致连接数据找不到中心节点 无法显示连接关系
+                # df_z.columns = ['公开公告号', '第一当前申请专利权人']
+                # df_22 = pd.DataFrame()
+                # for i in range(1, series.columns.size):
+                #     df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
+                #     df_l.columns = ['公开公告号', '第一申请人', '联合申请人']
+                #     df_22 = pd.concat([df_22, df_l])  ##所有新表叠加
+                # df_22.dropna(inplace=True)  # 删除空数据，获得有效数据
+                # df_22 = pd.concat([df_22['公开公告号'], df_22['第一申请人'], df_22['联合申请人'].str.strip()],
+                #                   axis=1)  # 用strip（）删除字符串头尾多余空格
+                # df_22 = df_22.groupby(['第一申请人', '联合申请人'], as_index=False)['公开公告号'].count()
+                # df_22 = df_22.sort_values(by='公开公告号', ascending=False)
+                # df_22.columns = ['第一申请人', '联合申请人', '申请数量']
+                #
+                # nodes3 = []
+                # for i in range(len(df_11)):
+                #     node = {"name": str(df_11.iat[i, 0]).strip(), "symbolSize": int(df_11.iat[i, 1]),"value":int(df_11.iat[i, 1])}
+                #
+                #     nodes3.append(node)
+                #
+                # links3 = []
+                # for i in range(len(df_22)):
+                #     link = {"source": str(df_22.iat[i, 0]).strip(), "target": str(df_22.iat[i, 1]).strip(),
+                #             "value": int(df_22.iat[i, 2])}
+                #     links3.append(link)
+                c = (
+                    Graph()
+                    .add(listx[0],
+                         nodes,
+                         links,
+                         repulsion=150,
+                         layout="force",
+                         edge_length=120,
+                         gravity=0.2,
+                         is_draggable=True,
+                         linestyle_opts=opts.LineStyleOpts(
+                             width=2,
+                             curve=0.3,
+                         ),  # 线条配置
+
+                         )
+                    # .add(listx[1],
+                    #      nodes2,
+                    #      links2,
+                    #      repulsion=200,
+                    #      layout="force",
+                    #      gravity=0.2,
+                    #      is_draggable=True,
+                    #      linestyle_opts=opts.LineStyleOpts(
+                    #          width=2,
+                    #          curve=0.3,
+                    #      ),  # 线条配置
+                    #
+                    #      )
+                    # .add(listx[2],
+                    #      nodes3,
+                    #      links3,
+                    #      repulsion=200,
+                    #      layout="force",  # 引力布局
+                    #      gravity=0.2,  # 斥力因子
+                    #      is_draggable= True,
+                    #      linestyle_opts=opts.LineStyleOpts(
+                    #          width=2,
+                    #          curve=0.3,
+                    #      ),  # 线条配置
+                    #
+                    #      )
+                    # .set_colors(
+                    #     ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
+                    #      "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
+                    #      "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
+                    .set_global_opts(
+                        toolbox_opts=opts.ToolboxOpts(
+                            orient='horizontal',  # 工具箱的方向，可选值为 'horizontal' 或 'vertical'
+                            item_size=15,
+                            item_gap=5,
+                            feature=toolbox_opts3['feature']
+                        ),
+                        legend_opts=opts.LegendOpts(
+                            type_='plain', is_show=True,
+                            pos_right='right',  # 右边
+                            orient='vertical',
+                            pos_top='10%',  # 距离上边界15%
+                            item_width=37,  # 图例宽
+                            item_height=21,  # 图例高
+                            background_color="transparent",
+                            border_color="transparent",
+                        ), )
+                    .set_series_opts(
+                        itemstyle_opts=opts.ItemStyleOpts(color="rgb(80,196,143)",  # 节点颜色
+                                                          border_color="rgb(245,97,111)",  # 节点边线颜色
+                                                          border_width=1,  # 节点边线宽度
+                                                          opacity=0.7,  # 节点透明度
+                                                          ),
+                        linestyle_opts=opts.LineStyleOpts(is_show=True,
+                                                          width=1,
+                                                          opacity=0.6,
+                                                          curve=0.2,  # 弯曲度
+                                                          type_="solid",  # 线条类型 'solid', 'dashed', 'dotted'
+                                                          color="red",
+                                                          ),
+                        label_opts=opts.LabelOpts(
+                            is_show=True,
+                            # position="top",
+                            color="rgb(54,133,254)",
+                            font_size=10,
+                            font_style='normal',  # 正常
+                            font_weight='bold',  # 加粗
+                            # color='auto',  # 系列颜色
+                            # font_family= 'serif',#
+                        ),  # 标签配置项
+                    )
                 )
-            )
-            return c
+                return c
 
     bar_chart = cunchupng()
     if biaoji!=0:
@@ -1930,118 +1931,120 @@ def huitu11():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 #联合申请人排名 圆柱
 def huitu12():
-    global biaoji
     def cunchupng():
-
+        global biaoji
         dfmb = dfm.loc[(dfm['当前申请专利权人数量'] != '-')]
         dfmb = dfmb.astype({'当前申请专利权人数量': 'int'})
         dfmb = dfmb.loc[(dfmb['当前申请专利权人数量'] != 1)]
         dfm1 = dfmb[['公开公告号', '当前申请专利权人']]
-        series = dfm1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
-        df_z = dfm1[['公开公告号']]
-        dfx = pd.DataFrame()
-        for i in range(0, series.columns.size):
-            df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
-            df_l.columns = ['公开公告号', '当前申请专利权人']
-            dfx = pd.concat([dfx, df_l])  ##所有新表叠加
-        dfx.dropna(inplace=True)  # 删除空数据，获得有效数据
-        dfx = pd.concat([dfx['公开公告号'], dfx['当前申请专利权人'].str.strip()], axis=1)  # 用strip（）删除字符串头尾多余空格
-        dfx = dfx.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
-        dfx = dfx.sort_values(by='公开公告号', ascending=False)
-        dfx.columns = ['当前申请专利权人', '申请数量']
-        dfx = dfx.head(10)
-        dfx = dfx.sort_values(by='申请数量', ascending=True)
-        if dfx.empty:
+        if dfm1.empty:
             biaoji=0
         else:
-            # for j in range(0, len(dfx['当前申请专利权人'])):
-            #     if len(dfx.iat[j, 0]) > 8:
-            #         dfx.iat[j, 0] = dfx.iat[j, 0][0:7] + '...'
-            #     else:
-            #         dfx.iat[j, 0] = dfx.iat[j, 0]
-            listx = list(dfx['当前申请专利权人'])
-            listy = list(dfx['申请数量'])
+            series = dfm1['当前申请专利权人'].str.split('|', expand=True)  # 按照 | 分隔符拆分字段，用以清楚多余空格，对比以|拆分字段
+            df_z = dfm1[['公开公告号']]
+            dfx = pd.DataFrame()
+            for i in range(0, series.columns.size):
+                df_l = pd.concat([df_z, series[i]], axis=1)  ##公开号与拆分后的一列申请人数据结合成新表
+                df_l.columns = ['公开公告号', '当前申请专利权人']
+                dfx = pd.concat([dfx, df_l])  ##所有新表叠加
+            dfx.dropna(inplace=True)  # 删除空数据，获得有效数据
+            dfx = pd.concat([dfx['公开公告号'], dfx['当前申请专利权人'].str.strip()], axis=1)  # 用strip（）删除字符串头尾多余空格
+            dfx = dfx.groupby('当前申请专利权人', as_index=False)['公开公告号'].count()
+            dfx = dfx.sort_values(by='公开公告号', ascending=False)
+            dfx.columns = ['当前申请专利权人', '申请数量']
+            dfx = dfx.head(10)
+            dfx = dfx.sort_values(by='申请数量', ascending=True)
+            if dfx.empty:
+                biaoji=0
+            else:
+                # for j in range(0, len(dfx['当前申请专利权人'])):
+                #     if len(dfx.iat[j, 0]) > 8:
+                #         dfx.iat[j, 0] = dfx.iat[j, 0][0:7] + '...'
+                #     else:
+                #         dfx.iat[j, 0] = dfx.iat[j, 0]
+                listx = list(dfx['当前申请专利权人'])
+                listy = list(dfx['申请数量'])
 
 
-            c = (
-                Bar(init_opts=opts.InitOpts(
-                    bg_color='#FFFFFF',
-                ))
-                .add_xaxis(listx)
-                .add_yaxis('申请数量', listy)
-                .reversal_axis()
-                .set_colors(
-                    ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
-                     "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
-                     "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
+                c = (
+                    Bar(init_opts=opts.InitOpts(
+                        bg_color='#FFFFFF',
+                    ))
+                    .add_xaxis(listx)
+                    .add_yaxis('申请数量', listy)
+                    .reversal_axis()
+                    .set_colors(
+                        ["rgb(54,133,254)", "rgb(245,97,111)", "rgb(80,196,143)", "rgb(38,204,216)", "rgb(153,119,239)",
+                         "rgb(247,177,63)", "rgb(249,226,100)", "rgb(244,122,117)", "rgb(0,157,178)", "rgb(2,75,81)",
+                         "rgb(7,128,207)", "rgb(118,80,5)"])  # 简洁
 
-                .set_global_opts(
-                    toolbox_opts=opts.ToolboxOpts(
-                        orient='horizontal',  # 工具箱的方向，可选值为 'horizontal' 或 'vertical'
-                        item_size=15,
-                        item_gap=5,
-                        feature=toolbox_opts['feature']
-                    ),
-                    xaxis_opts=opts.AxisOpts(
+                    .set_global_opts(
+                        toolbox_opts=opts.ToolboxOpts(
+                            orient='horizontal',  # 工具箱的方向，可选值为 'horizontal' 或 'vertical'
+                            item_size=15,
+                            item_gap=5,
+                            feature=toolbox_opts['feature']
+                        ),
+                        xaxis_opts=opts.AxisOpts(
 
-                        name='申请数量',  # 坐标轴名字
-                        name_location="end",  # 坐标轴位置'start', 'middle' 或者 'center','end'
-                        axislabel_opts=opts.LabelOpts(
+                            name='申请数量',  # 坐标轴名字
+                            name_location="end",  # 坐标轴位置'start', 'middle' 或者 'center','end'
+                            axislabel_opts=opts.LabelOpts(
 
+                                font_size=15,
+                                font_style='normal',
+                                font_weight='bold',
+                            )
+                        ),
+                        yaxis_opts=opts.AxisOpts(
+
+                            name='申请人',  # 坐标轴名字
+                            name_location="end",
+                            axislabel_opts=opts.LabelOpts(
+                                font_size=15,
+                                font_style='normal',
+                                font_weight='bold', )
+                        ),
+                        legend_opts=opts.LegendOpts(
+                             is_show=False,
+                        ),
+                    )
+                    .set_series_opts(
+                        label_opts=opts.LabelOpts(
+                            is_show=True,
+                            position="right",
                             font_size=15,
-                            font_style='normal',
-                            font_weight='bold',
-                        )
-                    ),
-                    yaxis_opts=opts.AxisOpts(
+                            font_style='normal',  # 字体 正常 倾斜
+                            font_weight='bold',  # 加粗
+                            color='auto',  # 系列颜色
+                            # font_family= 'serif',#
+                        ),  # 标签配置项
 
-                        name='申请人',  # 坐标轴名字
-                        name_location="end",
-                        axislabel_opts=opts.LabelOpts(
-                            font_size=15,
-                            font_style='normal',
-                            font_weight='bold', )
-                    ),
-                    legend_opts=opts.LegendOpts(
-                         is_show=False,
-                    ),
-                )
-                .set_series_opts(
-                    label_opts=opts.LabelOpts(
-                        is_show=True,
-                        position="right",
-                        font_size=15,
-                        font_style='normal',  # 字体 正常 倾斜
-                        font_weight='bold',  # 加粗
-                        color='auto',  # 系列颜色
-                        # font_family= 'serif',#
-                    ),  # 标签配置项
-
-                    itemstyle_opts={
-                        "normal": {
-                            "color": JsCode(
-                                """new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                            offset: 0,
-                            color: 'rgba(0, 244, 255, 1)'
-                        }, {
-                            offset: 1,
-                            color: 'rgba(0, 77, 167, 1)'
-                        }], false)"""
-                            ),
-                            "barBorderRadius": [30, 30, 30, 30],
-                            "shadowColor": "rgb(0, 160, 221)",
+                        itemstyle_opts={
+                            "normal": {
+                                "color": JsCode(
+                                    """new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: 'rgba(0, 244, 255, 1)'
+                            }, {
+                                offset: 1,
+                                color: 'rgba(0, 77, 167, 1)'
+                            }], false)"""
+                                ),
+                                "barBorderRadius": [30, 30, 30, 30],
+                                "shadowColor": "rgb(0, 160, 221)",
+                            }
                         }
-                    }
+
+                    )
 
                 )
 
-            )
-
-            grid = (
-                Grid(init_opts=opts.InitOpts(bg_color='#FFFFFF'))
-                # 设置距离 bar为x轴标签过长的柱状图
-                .add(c, grid_opts=opts.GridOpts(pos_left="25%")))
-            return grid
+                grid = (
+                    Grid(init_opts=opts.InitOpts(bg_color='#FFFFFF'))
+                    # 设置距离 bar为x轴标签过长的柱状图
+                    .add(c, grid_opts=opts.GridOpts(pos_left="25%")))
+                return grid
 
     bar_chart = cunchupng()
     if biaoji!=0:
@@ -2065,9 +2068,8 @@ def huitu12():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 #联合发明人团队情况
 def huitu13():
-    global biaoji
     def cunchupng():
-
+        global biaoji
         dfmb = dfm.loc[(dfm['发明人数量'] != '-')]
         dfmb = dfmb.astype({'发明人数量': 'int'})
         dfmb = dfmb.loc[(dfmb['发明人数量'] != 1)]
@@ -2300,7 +2302,7 @@ def huitu13():
                     itemstyle_opts=opts.ItemStyleOpts(color="rgb(80,196,143)",  # 节点颜色
                                                       border_color="rgb(245,97,111)",  # 节点边线颜色
                                                       border_width=1,  # 节点边线宽度
-                                                      opacity=0.9,  # 节点透明度
+                                                      opacity=0.7,  # 节点透明度
                                                       ),
                     linestyle_opts=opts.LineStyleOpts(is_show=True,
                                                       width=1,
@@ -2344,9 +2346,8 @@ def huitu13():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 #联合发明人团队发明人排名
 def huitu14():
-    global biaoji
     def cunchupng():
-
+        global biaoji
         dfmb = dfm.loc[(dfm['发明人数量'] != '-')]
         dfmb = dfmb.astype({'发明人数量': 'int'})
         dfmb = dfmb.loc[(dfmb['发明人数量'] != 1)]
@@ -2473,8 +2474,8 @@ def huitu14():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 #发明人词云图
 def huitu15():
-    global document
     def cunchupng():
+        global biaoji
         dfmb=dfm
         df1 = dfmb[['公开公告号', '发明人']]
         df1 = df1.loc[(df1['发明人'] != '-')]
@@ -2549,8 +2550,8 @@ def huitu15():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 #专利类型 趋势 时间轴
 def huitu16():
-    global biaoji
     def cunchupng():
+        global biaoji
         biaoji1=0
         dfmb = dfm.astype({'申请年': 'str'})
         tl = Timeline()
@@ -2647,8 +2648,8 @@ def huitu16():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 #受理局排名趋势 时间轴
 def huitu17():
-    global biaoji
     def cunchupng():
+        global biaoji
         dfmb = dfm.astype({'申请年': 'str'})
         tl = Timeline()
         for i in range(0, len(nianfen10)):
@@ -2748,8 +2749,8 @@ def huitu17():
     st.components.v1.html(html_with_css, height=500, scrolling=True)
 ##申请人排名趋势 时间轴
 def huitu18():
-    global biaoji
     def cunchupng():
+        global biaoji
         biaoji1 = 0
         dfmb = dfm.astype({'申请年': 'str'})
         tl = Timeline()
@@ -2868,8 +2869,8 @@ def huitu18():
         st.components.v1.html(html_with_css, height=500, scrolling=True)
 #发明人排名趋势 时间轴
 def huitu19():
-    global biaoji
     def cunchupng():
+        global biaoji
         biaoji1=0
         dfmb = dfm.astype({'申请年': 'str'})
         tl = Timeline()
@@ -3165,3 +3166,5 @@ else:
 st.balloons()
 #雪花
 st.snow()
+
+
