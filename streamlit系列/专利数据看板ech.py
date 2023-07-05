@@ -229,7 +229,7 @@ dishi='台州'
 
 
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
-st.set_page_config(initial_sidebar_state='auto',layout='wide')
+st.set_page_config(initial_sidebar_state='expanded',layout='wide')
 # # 添加背景
 # def add_local_backgound_image_(image):
 #     with open(image, "rb") as image_file:
