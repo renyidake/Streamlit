@@ -8,7 +8,7 @@ st.set_page_config(layout="wide")
 st.title('Excel文件合并')
 
 uploaded_files = st.file_uploader('上传多个Excel文件', accept_multiple_files=True, type='xlsx')
-
+print(uploaded_files)
 if not uploaded_files:
     st.warning('请上传至少一个Excel文件')
     st.stop()
@@ -18,11 +18,12 @@ if st.button('开始合并'):
     dfs = []
 
     for file in uploaded_files:
+        print(file)
         df = pd.read_excel(file)
         dfs.append(df)
 
     merged_df = pd.concat(dfs)
-
+    merged_df = merged_df.drop_duplicates()
     # Save the merged DataFrame to a temporary file
     with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp:
         result_file = tmp.name
