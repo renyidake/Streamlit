@@ -33,7 +33,7 @@ def merge_selected_sheets(dfs, sheet_selects):
 
     for name in sheet_selects:
         df = dfs[name]
-        df = df.astype({'申请号': 'str'})
+        # df = df.astype({'申请号': 'str'})
         df['表名'] = name
         combined_df = pd.concat([combined_df, df], ignore_index=True)
 
