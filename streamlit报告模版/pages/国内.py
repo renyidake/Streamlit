@@ -56,7 +56,7 @@ from pandas.api.types import CategoricalDtype
 import time
 
 # # 加载自定义字体文件
-mpl.font_manager.fontManager.addfont('streamlit报告模板/simhei.ttf')
+mpl.font_manager.fontManager.addfont('streamlit报告模版/simhei.ttf')
 
 mpl.rcParams['font.sans-serif'] = ["SimHei"]
 # 正常显示中文字符
@@ -295,13 +295,13 @@ dishi='宜昌'
 
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
 st.set_page_config(initial_sidebar_state='expanded',layout='wide')
-st.image("streamlit报告模板/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
+st.image("streamlit报告模版/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
 uploaded_files = st.file_uploader('上传Excel文件,请务必包含：公开(公告)号、受理局、标题、专利类型、申请年、优先权国家、[标]当前申请(专利权)人、当前申请(专利权)人数量、发明人、发明人数量、IPC分类号、IPC主分类号(小类)、'
                                   '简单法律状态、法律状态/事件、当前申请(专利权)人州/省、当前申请(专利权)人地市、当前申请(专利权)人区县，请参照下表！', accept_multiple_files=True, type='xlsx')
 
 if not uploaded_files:
     def load_df():
-        return pd.read_excel('streamlit报告模板/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+        return pd.read_excel('streamlit报告模版/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
     df = load_df()
 else:
     for file in uploaded_files:
