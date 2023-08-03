@@ -295,7 +295,7 @@ dishi='杭州'
 
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
 st.set_page_config(initial_sidebar_state='expanded',layout='wide')
-st.image("streamlit报告模版/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
+# st.image("streamlit报告模版/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
 uploaded_files = st.file_uploader('上传Excel文件,请务必包含：公开(公告)号、受理局、标题、专利类型、申请年、优先权国家、[标]当前申请(专利权)人、当前申请(专利权)人数量、发明人、发明人数量、IPC分类号、IPC主分类号(小类)、'
                                   '简单法律状态、法律状态/事件、当前申请(专利权)人州/省、当前申请(专利权)人地市、当前申请(专利权)人区县，请参照下表！', accept_multiple_files=True, type='xlsx')
 
