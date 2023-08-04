@@ -290,7 +290,7 @@ def wenben(wb):
     run1.font.size = Pt(12)
     run1.font.bold = False
     run1.font.color.rgb = RGBColor(0, 0, 0)
-dishi='杭州'
+
 
 
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
@@ -310,6 +310,9 @@ else:
 # 侧边栏 标题
 st.sidebar.header('➡⌛⌛⌛分析模版选择⌛⌛⌛⬅')
 
+st.text_input("请输入要分析的城市：如北京、上海、宜昌、杭州", key="name")
+dishi=st.session_state.name
+print(dishi)
 # 页面 标题
 st.title('🎉🎉🎉市级专利数据分析看板🎉🎉🎉')
 

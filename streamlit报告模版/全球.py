@@ -301,7 +301,7 @@ uploaded_files = st.file_uploader('上传Excel文件,请务必包含：公开(�
 
 if not uploaded_files:
     def load_df():
-        return pd.read_excel('streamlit报告模版/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+        return pd.read_excel('streamlit报告模版/AR眼镜.XLSX')  # streamlit报告模版/AR眼镜.XLSX
     df = load_df()
 else:
     for file in uploaded_files:
@@ -309,6 +309,9 @@ else:
         df = pd.read_excel(file)
 # 侧边栏 标题
 st.sidebar.header('➡⌛⌛⌛分析模版选择⌛⌛⌛⬅')
+
+
+
 
 # 页面 标题
 st.title('🎉🎉🎉全球专利数据分析看板🎉🎉🎉')

@@ -310,7 +310,9 @@ else:
         df = pd.read_excel(file)
 # 侧边栏 标题
 st.sidebar.header('➡⌛⌛⌛分析模版选择⌛⌛⌛⬅')
-
+st.text_input("请输入要分析的申请人：(数据表中的申请人名称)", key="name")
+shenqingren=st.session_state.name
+print(shenqingren)
 # 页面 标题
 st.title('🎉🎉🎉申请人专利数据分析看板🎉🎉🎉')
 
