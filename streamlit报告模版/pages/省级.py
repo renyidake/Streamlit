@@ -290,8 +290,7 @@ def wenben(wb):
     run1.font.size = Pt(12)
     run1.font.bold = False
     run1.font.color.rgb = RGBColor(0, 0, 0)
-shengji = '浙江'
-dishi='宜昌'
+
 
 
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
@@ -311,7 +310,7 @@ else:
 # 侧边栏 标题
 st.sidebar.header('➡⌛⌛⌛分析模版选择⌛⌛⌛⬅')
 
-st.text_input("请输入要分析的城市：如浙江、河南、山东", key="name")
+st.text_input("请输入要分析的城市：如浙江、河南、山东(若未输入则数据范围是总数据)", key="name")
 shengji=st.session_state.name
 print(shengji)
 # 页面 标题

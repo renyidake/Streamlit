@@ -290,9 +290,7 @@ def wenben(wb):
     run1.font.size = Pt(12)
     run1.font.bold = False
     run1.font.color.rgb = RGBColor(0, 0, 0)
-shengji = '浙江'
-dishi='宜昌'
-shenqingren='奇跃公司'
+
 
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
 st.set_page_config(initial_sidebar_state='expanded',layout='wide')
@@ -302,7 +300,7 @@ uploaded_files = st.file_uploader('上传Excel文件,请务必包含：公开(�
 
 if not uploaded_files:
     def load_df():
-        return pd.read_excel('streamlit报告模版/AR眼镜.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+        return pd.read_excel('streamlit报告模版/AR眼镜.XLSX')  # streamlit报告模版/AR眼镜.XLSX
     df = load_df()
 else:
     for file in uploaded_files:
@@ -310,9 +308,13 @@ else:
         df = pd.read_excel(file)
 # 侧边栏 标题
 st.sidebar.header('➡⌛⌛⌛分析模版选择⌛⌛⌛⬅')
-st.text_input("请输入要分析的申请人：(数据表中的申请人名称)", key="name")
+
+st.text_input("请输入要分析的申请人：(数据表中的申请人名称，若未输入则数据范围是总数据)", key="name")
 shenqingren=st.session_state.name
 print(shenqingren)
+
+
+
 # 页面 标题
 st.title('🎉🎉🎉申请人专利数据分析看板🎉🎉🎉')
 

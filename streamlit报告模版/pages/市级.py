@@ -292,7 +292,6 @@ def wenben(wb):
     run1.font.color.rgb = RGBColor(0, 0, 0)
 
 
-
 #侧边栏初始状态为折叠 streamlit 页面布局为 宽
 st.set_page_config(initial_sidebar_state='expanded',layout='wide')
 # st.image("streamlit报告模版/新不二LOGO.png")  # streamlit系列/新不二LOGO.png
@@ -310,7 +309,7 @@ else:
 # 侧边栏 标题
 st.sidebar.header('➡⌛⌛⌛分析模版选择⌛⌛⌛⬅')
 
-st.text_input("请输入要分析的城市：如北京、上海、宜昌、杭州", key="name")
+st.text_input("请输入要分析的城市：如北京、上海、宜昌、杭州(若未输入则数据范围是总数据)", key="name")
 dishi=st.session_state.name
 print(dishi)
 # 页面 标题
