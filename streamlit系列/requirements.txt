@@ -3,3 +3,4 @@ pygwalker==0.1.9.1
 matplotlib==3.5.2
 pyecharts==2.0.3
 docxtpl==0.16.4
+xlwings==0.29.0
