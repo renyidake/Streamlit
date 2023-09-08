@@ -23,7 +23,7 @@ temp_dir = tempfile.TemporaryDirectory()
 uploaded_files = st.file_uploader('上传Excel文件,请务必保持格式正确，具体请参照下表！', accept_multiple_files=True, type='xlsx')
 
 if not uploaded_files:
-    df=pd.read_excel('streamlit系列/评分表2.XLSX')  # streamlit系列/2020-2022中之信.xlsx
+    df=pd.read_excel('streamlit系列/评分表2.xlsx')  # streamlit系列/2020-2022中之信.xlsx
     st.write("数据表格式:")
     df
     st.write("Word表格模版:")
