@@ -13,7 +13,7 @@ import tempfile
 import os
 
 path='D:\工具'
-name='产出'
+name='自动化产出'
 isExists=os.path.exists(path+name)
 if not isExists:
     os.makedirs(path+name)
@@ -72,7 +72,7 @@ else:
         data_m = data['申请号'].replace('/', '-')
         document = DocxTemplate(word_template)  # 使用DocxTemplate打开Word模板文件
         document.render(data)  # 将数据填充到模板中
-        output_path = r'D:\工具产出\%s.专利%s的价值评分表.docx' % (i + 1, data_m)  # 每行数据生成一个单独的Word文档文件名
+        output_path = r'D:\工具自动化产出\%s.专利%s的价值评分表.docx' % (i + 1, data_m)  # 每行数据生成一个单独的Word文档文件名
         document.save(output_path)  # 保存填充后的模板为新的Word文档
 
 temp_dir.cleanup()
