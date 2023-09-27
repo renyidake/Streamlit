@@ -16,6 +16,8 @@ from docx.enum.style import WD_STYLE_TYPE #读取各部分名称
 import tempfile
 import os
 import streamlit as st
+import tkinter as tk
+from tkinter import filedialog
 
 path='D:\工具'
 name='自动化产出'
@@ -237,8 +239,24 @@ else:
     # Normal (Web)
     # TOC Heading  标题 自定义？
 
-    wd.save(r'D:\工具自动化产出\word文档格式调整.docx')
-    # st.write('Word文档已存储于：D:\工具自动化绘图\word文档格式调整.docx')
-    st.markdown("<span style='color:red'>Word文档已存储于：D:\工具自动化产出\word文档格式调整.docx</span>", unsafe_allow_html=True)
+    # 在Streamlit中添加一个下载按钮
+    # 在Streamlit中添加一个下载按钮
+    if st.button('保存并下载文档'):
+        # 弹出文件对话框，让用户选择保存路径
+        root = tk.Tk()
+        root.withdraw()  # 隐藏tkinter窗口
+        save_path = filedialog.asksaveasfilename(defaultextension=".docx", filetypes=[("Word文档", "*.docx")])
+
+        if save_path:
+            try:
+                wd.save(save_path)
+                st.success(f'文档已保存到：{save_path}')
+            except Exception as e:
+                st.error(f'保存文档时出错：{str(e)}')
+        else:
+            st.warning('请选择有效的保存路径')
+
+    # 清理临时文件夹
 temp_dir.cleanup()
+
 
