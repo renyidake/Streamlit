@@ -16,8 +16,7 @@ from docx.enum.style import WD_STYLE_TYPE #读取各部分名称
 import tempfile
 import os
 import streamlit as st
-import tkinter as tk
-from tkinter import filedialog
+
 
 path='D:\工具'
 name='自动化产出'
