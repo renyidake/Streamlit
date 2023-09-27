@@ -17,9 +17,15 @@ import tempfile
 import os
 import streamlit as st
 
+path='D:\工具'
+name='自动化产出'
+isExists=os.path.exists(path+name)
+if not isExists:
+    os.makedirs(path+name)
+
 # 创建一个临时文件夹用于存储上传的文件
 temp_dir = tempfile.TemporaryDirectory()
-uploaded_files = st.file_uploader('上传Excel文件,请务必保持格式正确，具体请参照下表！', accept_multiple_files=True, type='docx')
+uploaded_files = st.file_uploader('上传需要更改格式的Word文件！', accept_multiple_files=True, type='docx')
 
 if not uploaded_files:
     文件=Document('streamlit系列/练习原.docx')  # streamlit系列/2020-2022中之信.xlsx
@@ -231,8 +237,8 @@ else:
     # Normal (Web)
     # TOC Heading  标题 自定义？
 
-    文件.save(r'D:\工具自动化绘图\word文档格式调整.docx')
+    文件.save(r'D:\工具自动化产出\word文档格式调整.docx')
     # st.write('Word文档已存储于：D:\工具自动化绘图\word文档格式调整.docx')
-    st.markdown("<span style='color:red'>Word文档已存储于：D:\工具自动化绘图\word文档格式调整.docx</span>", unsafe_allow_html=True)
+    st.markdown("<span style='color:red'>Word文档已存储于：D:\工具自动化产出\word文档格式调整.docx</span>", unsafe_allow_html=True)
 
 
