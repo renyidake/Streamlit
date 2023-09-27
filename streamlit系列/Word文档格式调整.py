@@ -238,25 +238,25 @@ else:
     # toc 2
     # Normal (Web)
     # TOC Heading  标题 自定义？
+# 在Streamlit中添加一个下载按钮
+# 在Streamlit中添加一个下载按钮
+# 在Streamlit中添加一个下载按钮
 
-    # 在Streamlit中添加一个下载按钮
-    # 在Streamlit中添加一个下载按钮
-    if st.button('保存并下载文档'):
-        # 弹出文件对话框，让用户选择保存路径
-        root = tk.Tk()
-        root.withdraw()  # 隐藏tkinter窗口
-        save_path = filedialog.asksaveasfilename(defaultextension=".docx", filetypes=[("Word文档", "*.docx")])
+# 获取用户输入的保存路径
+save_path = st.text_input('输入保存路径（包括文件名如：D:\工具自动化产出\1.docx）', value='', key='save_path')
 
-        if save_path:
-            try:
-                wd.save(save_path)
-                st.success(f'文档已保存到：{save_path}')
-            except Exception as e:
-                st.error(f'保存文档时出错：{str(e)}')
-        else:
-            st.warning('请选择有效的保存路径')
+if save_path:
+    try:
+        wd.save(save_path)
+        st.success(f'文档已保存到：{save_path}')
+    except Exception as e:
+        st.error(f'保存文档时出错：{str(e)}')
+else:
+    st.warning('请输入有效的保存路径')
 
-    # 清理临时文件夹
+
+
+# 清理临时文件夹
 temp_dir.cleanup()
 
 

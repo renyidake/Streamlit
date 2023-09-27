@@ -5,11 +5,3 @@ pyecharts==2.0.3
 docxtpl==0.16.4
 xlwings==0.29.0
 docx==0.2.4
-PyQt5==5.15.4
-pyqt5-plugins==5.15.4.2.2
-PyQt5-Qt5==5.15.2
-PyQt5-sip==12.10.1
-pyqt5-tools==5.15.4.3.2
-qt5-applications==5.15.2.2.2
-qt5-tools==5.15.2.1.2
-
