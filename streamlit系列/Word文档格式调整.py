@@ -22,7 +22,7 @@ temp_dir = tempfile.TemporaryDirectory()
 uploaded_files = st.file_uploader('上传Excel文件,请务必保持格式正确，具体请参照下表！', accept_multiple_files=True, type='docx')
 
 if not uploaded_files:
-    文件=Document('练习原.docx')  # streamlit系列/2020-2022中之信.xlsx
+    文件=Document('streamlit系列/练习原.docx')  # streamlit系列/2020-2022中之信.xlsx
 else:
     for file in uploaded_files:
         # 将上传的文件保存到临时文件夹中
